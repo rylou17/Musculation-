@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172b25">
+<title>Mon suivi musculation</title>
+<style>
+:root{color-scheme:light;--bg:#f3f5f2;--card:#fff;--ink:#1c2923;--muted:#66736c;--line:#dce3dd;--green:#236b4b;--soft:#e7f1eb;--red:#a13e38}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 14px calc(24px + env(safe-area-inset-bottom))}
+main{max-width:680px;margin:auto}.top{padding:24px 2px 16px}.eyebrow{font-size:12px;letter-spacing:.09em;color:var(--muted);font-weight:700}.top h1{font-size:27px;margin:5px 0}.sub{color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.stat,.card,.exercise{background:var(--card);border:1px solid var(--line);border-radius:15px}.stat{padding:12px}.stat small{display:block;color:var(--muted);font-size:12px}.stat strong{display:block;font-size:21px;margin-top:4px}
+.tabs{display:flex;gap:8px;margin:16px 0 12px}.tab{flex:1;border:1px solid var(--line);background:var(--card);border-radius:11px;padding:11px 8px;font-weight:700;color:var(--ink)}.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:16px 2px 8px}.sectionhead h2{font-size:18px;margin:0}.muted{color:var(--muted);font-size:13px}
+.progress{height:8px;background:#dfe6e0;border-radius:10px;overflow:hidden;margin:8px 0 13px}.progress span{display:block;height:100%;background:var(--green);width:0;transition:width .2s}
+.exercise{padding:13px;margin:9px 0}.ex-title{font-weight:700;line-height:1.3}.ex-meta{font-size:12px;color:var(--muted);margin-top:3px}.fields{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}.field{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}.field input{width:76px;border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font:inherit;color:var(--ink);background:#fff}.field input.reps{width:62px}
+.sets{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:13px}.set{height:35px;min-width:35px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-weight:700}.set.done{background:var(--green);color:white;border-color:var(--green)}.sets-label{font-size:12px;color:var(--muted);margin-right:3px}
+.card{padding:14px;margin:13px 0}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:700;background:var(--green);color:white;font-size:14px}.btn.secondary{background:var(--soft);color:var(--green);border:1px solid #cfe0d4}.btn.danger{background:#f8e9e7;color:var(--red);border:1px solid #ecd0cc}.btn.full{width:100%}.row{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}.select{max-width:62%;padding:8px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);font:inherit}
+canvas{width:100%;height:190px;display:block}.history-item{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.history-item:last-child{border:0}
+.tools{display:flex;gap:8px;flex-wrap:wrap}.notice{font-size:12px;color:var(--muted);line-height:1.5}.hidden{display:none!important}
+@media(min-width:540px){.exercise{padding:15px}.fields{gap:18px}}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><div class="eyebrow">SUIVI PERSONNEL</div><h1>💪 Mon suivi musculation</h1><div class="sub">Tes séances, tes charges et ta progression — directement sur cet appareil.</div></header>
+<section class="stats">
+ <div class="stat"><small>Séances</small><strong id="statSessions">0</strong></div>
+ <div class="stat"><small>Séries cochées</small><strong id="statSets">0</strong></div>
+ <div class="stat"><small>Volume cumulé</small><strong id="statVolume">0</strong><small>kg × reps</small></div>
+</section>
+<nav class="tabs"><button class="tab active" data-day="A">Séance A<br><small>Push</small></button><button class="tab" data-day="B">Séance B<br><small>Pull</small></button></nav>
+<div class="sectionhead"><h2 id="dayTitle">Séance A</h2><span class="muted" id="progressLabel">0 / 15 séries</span></div>
+<div class="progress"><span id="progressFill"></span></div>
+<div id="exerciseList"></div>
+<section class="card">
+ <div class="sectionhead" style="margin:0 0 8px"><h2>Fin de séance</h2></div>
+ <p class="muted">Enregistre les séries cochées dans ton historique. Tu peux enregistrer une séance même si tous les exercices ne sont pas terminés.</p>
+ <button class="btn full" id="saveSession">Enregistrer la séance</button><p id="saveMessage" class="muted" aria-live="polite"></p>
+</section>
+<section class="card">
+ <div class="row"><h2 style="font-size:18px;margin:0">📈 Progression</h2><select class="select" id="chartExercise" aria-label="Choisir un exercice"></select></div>
+ <canvas id="chart" width="600" height="300"></canvas><div id="chartInfo" class="muted">Enregistre plusieurs séances pour voir l'évolution de tes charges.</div>
+</section>
+<section class="card">
+ <div class="row"><h2 style="font-size:18px;margin:0">Historique</h2><button class="btn danger" id="clearHistory">Effacer</button></div>
+ <div id="historyList" class="muted" style="margin-top:8px">Aucune séance enregistrée.</div>
+</section>
+<section class="card">
+ <h2 style="font-size:18px;margin:0 0 8px">Sauvegarde de tes données</h2>
+ <p class="notice">Les données restent dans le stockage de ce navigateur sur cet iPhone. Pour éviter toute perte, exporte régulièrement une sauvegarde JSON et conserve-la dans Fichiers ou iCloud Drive. Tu pourras la réimporter plus tard.</p>
+ <div class="tools"><button class="btn secondary" id="exportData">Exporter ma sauvegarde</button><label class="btn secondary" for="importFile" style="cursor:pointer">Importer une sauvegarde</label><input id="importFile" type="file" accept=".json,application/json" class="hidden"></div>
+ <p class="notice" id="backupMessage" aria-live="polite"></p>
+</section>
+<footer class="notice" style="text-align:center;padding:10px 4px">Application autonome · Aucun compte · Aucun serveur · Aucune donnée envoyée sur Internet.</footer>
+</main>
+<script>
+(()=>{
+'use strict';
+const KEY='suivi_musculation_local_v1';
+const plans={
+ A:[
+  {name:'Développé couché haltères',sets:3,reps:12,weight:8,unit:'kg / main'},
+  {name:'Papillon',sets:3,reps:12,weight:15,unit:'kg'},
+  {name:'Élévations latérales',sets:3,reps:12,weight:4,unit:'kg / main'},
+  {name:'Élévation frontale croisée',sets:3,reps:12,weight:5,unit:'kg'},
+  {name:'Triceps poulie barre',sets:3,reps:12,weight:15,unit:'kg'}
+ ],
+ B:[
+  {name:'Tirage vertical',sets:3,reps:12,weight:25,unit:'kg'},
+  {name:'Tirage horizontal',sets:3,reps:12,weight:20,unit:'kg'},
+  {name:'Rowing haltère un bras',sets:3,reps:12,weight:10,unit:'kg'},
+  {name:'Oiseau haltères',sets:3,reps:15,weight:3,unit:'kg / main'},
+  {name:'Curl biceps',sets:3,reps:12,weight:8,unit:'kg / main'}
+ ]
+};
+let state={history:[],weights:{},reps:{}},day='A',checks={};
+const $=id=>document.getElementById(id), key=(d,i)=>d+'_'+i;
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')state={...state,...saved};}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state));$('backupMessage').textContent='';}catch(e){$('backupMessage').textContent='Stockage indisponible ou saturé : exporte une sauvegarde.';}}
+function weight(d,i){return state.weights[key(d,i)]??plans[d][i].weight}
+function reps(d,i){return state.reps[key(d,i)]??plans[d][i].reps}
+function render(){
+ $('dayTitle').textContent='Séance '+day+(day==='A'?' — Pectoraux, épaules, triceps':' — Dos, biceps, épaules arrière');
+ document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.day===day));
+ const host=$('exerciseList');host.innerHTML='';
+ plans[day].forEach((ex,i)=>{
+  const k=key(day,i),done=checks[k]||[],card=document.createElement('article');card.className='exercise';
+  const title=document.createElement('div');title.className='ex-title';title.textContent=ex.name;card.appendChild(title);
+  const meta=document.createElement('div');meta.className='ex-meta';meta.textContent=ex.sets+' séries prévues';card.appendChild(meta);
+  const fields=document.createElement('div');fields.className='fields';
+  fields.appendChild(makeField('Poids',weight(day,i),ex.unit,'weight',i));
+  fields.appendChild(makeField('Répétitions',reps(day,i),'par série','reps',i));
+  card.appendChild(fields);
+  const sets=document.createElement('div');sets.className='sets';
+  const label=document.createElement('span');label.className='sets-label';label.textContent='Séries :';sets.appendChild(label);
+  for(let j=0;j<ex.sets;j++){const b=document.createElement('button');b.type='button';b.className='set'+(done.includes(j)?' done':'');b.textContent=done.includes(j)?'✓':String(j+1);b.setAttribute('aria-label','Série '+(j+1)+(done.includes(j)?' effectuée':' à effectuer'));b.addEventListener('click',()=>{checks[k]=checks[k]||[];checks[k]=checks[k].includes(j)?checks[k].filter(x=>x!==j):[...checks[k],j];render();});sets.appendChild(b);}
+  card.appendChild(sets);host.appendChild(card);
+ });
+ updateProgress();
+}
+function makeField(label,value,suffix,type,i){
+ const wrap=document.createElement('label');wrap.className='field';const span=document.createElement('span');span.textContent=label;const input=document.createElement('input');input.type='number';input.min=type==='reps'?'1':'0';input.step=type==='reps'?'1':'0.5';input.value=value;input.inputMode='decimal';input.setAttribute('aria-label',label+' '+plans[day][i].name);if(type==='reps')input.className='reps';
+ input.addEventListener('change',()=>{const n=Number(input.value);if(!Number.isFinite(n)||n<(type==='reps'?1:0)){input.value=value;return;}if(type==='reps')state.reps[key(day,i)]=n;else state.weights[key(day,i)]=n;persist();});
+ const unit=document.createElement('span');unit.textContent=suffix;wrap.append(span,input,unit);return wrap;
+}
+function updateProgress(){let total=0,done=0;plans[day].forEach((e,i)=>{total+=e.sets;done+=(checks[key(day,i)]||[]).length;});$('progressLabel').textContent=done+' / '+total+' séries';$('progressFill').style.width=(done/total*100)+'%';}
+function stats(){let sets=0,vol=0;state.history.forEach(h=>{sets+=h.sets;vol+=h.volume;});$('statSessions').textContent=state.history.length;$('statSets').textContent=sets;$('statVolume').textContent=Math.round(vol).toLocaleString('fr-FR');}
+function save(){
+ let exercises=[],sets=0,volume=0;
+ plans[day].forEach((ex,i)=>{const n=(checks[key(day,i)]||[]).length,w=weight(day,i),r=reps(day,i);sets+=n;volume+=n*w*r;exercises.push({name:ex.name,weight:w,reps:r,sets:n,unit:ex.unit});});
+ if(!sets){$('saveMessage').textContent='Coche au moins une série avant l’enregistrement.';return;}
+ state.history.push({date:new Date().toISOString(),day,sets,volume,exercises});persist();checks={};$('saveMessage').textContent='Séance enregistrée. Bravo !';render();stats();history();drawChart();
+}
+function history(){const host=$('historyList');host.innerHTML='';if(!state.history.length){host.textContent='Aucune séance enregistrée.';return;}
+ state.history.slice().reverse().forEach(h=>{const div=document.createElement('div');div.className='history-item';const date=new Date(h.date);const dateText=isNaN(date)?h.date:date.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});div.textContent=dateText+' · Séance '+h.day+' · '+h.sets+' séries · '+Math.round(h.volume).toLocaleString('fr-FR')+' kg × reps';host.appendChild(div);});
+}
+function drawChart(){
+ const name=$('chartExercise').value,canvas=$('chart'),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+ const points=state.history.map((session,index)=>{const ex=session.exercises.find(x=>x.name===name&&x.sets>0);return ex?{index,weight:ex.weight,date:session.date}:null;}).filter(Boolean);
+ if(!points.length){$('chartInfo').textContent='Pas encore de série enregistrée pour cet exercice.';return;}
+ const min=Math.min(...points.map(p=>p.weight)),max=Math.max(...points.map(p=>p.weight)),pad=Math.max(1,(max-min)*.2),lo=Math.max(0,min-pad),hi=max+pad;
+ const left=48,right=w-20,top=24,bottom=h-38;
+ ctx.strokeStyle='#dce3dd';ctx.lineWidth=1;ctx.fillStyle='#66736c';ctx.font='17px sans-serif';
+ for(let j=0;j<4;j++){const y=top+(bottom-top)*j/3;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();const val=hi-(hi-lo)*j/3;ctx.fillText(val.toFixed(1),4,y+5);}
+ const x=i=>points.length===1?(left+right)/2:left+(right-left)*i/(points.length-1),y=v=>bottom-(v-lo)/(hi-lo)*(bottom-top);
+ ctx.strokeStyle='#236b4b';ctx.lineWidth=5;ctx.lineJoin='round';ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.weight)):ctx.moveTo(x(i),y(p.weight)));ctx.stroke();
+ points.forEach((p,i)=>{ctx.fillStyle='#236b4b';ctx.beginPath();ctx.arc(x(i),y(p.weight),6,0,Math.PI*2);ctx.fill();});
+ $('chartInfo').textContent='Dernière charge : '+points.at(-1).weight+' kg · '+points.length+' séance(s) avec cet exercice.';
+}
+function setupChart(){const select=$('chartExercise');[...plans.A,...plans.B].forEach(ex=>{const o=document.createElement('option');o.value=ex.name;o.textContent=ex.name;select.appendChild(o);});select.addEventListener('change',drawChart);}
+$('saveSession').addEventListener('click',save);
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{day=b.dataset.day;render();}));
+$('clearHistory').addEventListener('click',()=>{if(confirm('Supprimer définitivement tout l’historique enregistré sur cet appareil ?')){state.history=[];persist();stats();history();drawChart();}});
+$('exportData').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({format:'suivi-musculation',version:1,...state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='sauvegarde-musculation.json';a.click();URL.revokeObjectURL(url);$('backupMessage').textContent='Sauvegarde exportée. Retrouve-la dans Fichiers / Téléchargements.';});
+$('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(obj.format!=='suivi-musculation'||!Array.isArray(obj.history)||typeof obj.weights!=='object')throw Error();if(!confirm('Remplacer les données actuelles par cette sauvegarde ?'))return;state={history:obj.history,weights:obj.weights||{},reps:obj.reps||{}};persist();stats();history();render();drawChart();$('backupMessage').textContent='Sauvegarde importée.';}catch(err){$('backupMessage').textContent='Fichier invalide ou incompatible.';}e.target.value='';});
+setupChart();render();stats();history();drawChart();
+})();
+</script>
+</body>
+</html>
