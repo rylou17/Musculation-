@@ -61,6 +61,25 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
 .anatomy-panel .chip{border:1px solid #704322;background:#302117;color:#ffc092;padding:7px 10px;font-size:10px}
 @media(max-width:360px){.anatomy-detailed{gap:6px}.anatomy-detailed .bodymap svg{height:238px}.anatomy-detailed figcaption{font-size:9px;letter-spacing:.1em}}
 
+
+/* V3.5 — carte anatomique fitness premium */
+.premium-anatomy{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.premium-anatomy .bodymap{position:relative;overflow:hidden;margin:0;min-width:0;padding:11px 3px 13px;border-radius:19px;border:1px solid #383e48;background:radial-gradient(ellipse at 50% 38%,#343a44 0%,#1d2128 52%,#14171c 100%);box-shadow:inset 0 1px #ffffff0b,0 12px 26px #0003}
+.premium-anatomy .bodymap:after{content:"";position:absolute;inset:35px 12px 40px;background:radial-gradient(ellipse,#ff812d0d,transparent 68%);pointer-events:none}
+.premium-anatomy .bodymap svg{position:relative;z-index:1;width:100%;height:clamp(250px,76vw,340px);max-width:230px;filter:drop-shadow(0 9px 12px #0006)}
+.premium-anatomy .body-outline{fill:url(#skinFront);stroke:#8993a0;stroke-width:1.35;opacity:.82}
+.premium-anatomy .bodymap:nth-child(2) .body-outline{fill:#343b45}
+.premium-anatomy .muscle-shape{fill:url(#muscleFront);stroke:#a2acb9;stroke-width:.8;stroke-linejoin:round;opacity:.88;transition:fill .2s,filter .2s,opacity .2s}
+.premium-anatomy .muscle-shape.on{fill:#ff812d;stroke:#ffd0a7;stroke-width:1.15;filter:drop-shadow(0 0 5px #ff812d88);opacity:1}
+.premium-anatomy .muscle-shape.secondary{fill:#a95b32;stroke:#e7a477;filter:drop-shadow(0 0 3px #d66a2a55);opacity:1}
+.premium-anatomy .muscle-detail{fill:none;stroke:#b5bec9;stroke-width:.85;stroke-linecap:round;opacity:.35}
+.premium-anatomy figcaption{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;gap:6px;margin-top:3px;color:#f1f2f4;font-size:10px;font-weight:900;letter-spacing:.16em}
+.premium-anatomy figcaption b{color:#ff9952;font-size:9px}.premium-anatomy figcaption small{color:#89919d;font-size:8px;letter-spacing:.12em}
+.map-kicker{position:relative;z-index:2;color:#858e9b;font-size:8px;letter-spacing:.2em;font-weight:900;text-align:center;margin:1px 0 2px}
+.map-legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:13px 0 3px;color:#aeb4bd;font-size:10px}.map-legend span{display:flex;align-items:center;gap:6px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.dot.primary{background:#ff812d;box-shadow:0 0 8px #ff812d88}.dot.secondary{background:#a95b32}
+.premium-anatomy .chip{border:1px solid #704322;background:#302117;color:#ffc092;padding:7px 10px;font-size:10px}
+@media(max-width:360px){.premium-anatomy{gap:5px}.premium-anatomy .bodymap svg{height:240px}.premium-anatomy figcaption{font-size:9px;letter-spacing:.1em}}
+
 </style>
 </head>
 <body>
@@ -112,50 +131,39 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
 <section class="page" id="page-anatomy">
  <div class="sectionhead"><div><div class="eyebrow">ANALYSE MUSCULAIRE</div><h2>Carte du corps</h2></div><span class="pill">LIVE MAP</span></div>
  <div class="panel anatomy-panel"><div class="split"><div><h3>Muscles activés</h3><div class="muted">Visualisation par séance</div></div><div class="session-switch" style="margin:0;max-width:190px"><button class="switch active" data-anatomy-day="A">A · PUSH</button><button class="switch" data-anatomy-day="B">B · PULL</button></div></div><p class="muted anatomy-intro">Les zones lumineuses indiquent les principaux groupes musculaires sollicités.</p>
-  <div class="anatomy anatomy-detailed">
-   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Carte musculaire de face"><defs><linearGradient id="bodyTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#424851"/><stop offset=".5" stop-color="#30353d"/><stop offset="1" stop-color="#22262d"/></linearGradient></defs>
-    <g class="anatomy-base">
-     <path class="body-outline" d="M101 28 C88 30 83 43 85 57 L88 68 C75 72 62 75 52 86 C44 96 40 116 35 141 L23 194 Q21 205 30 208 Q39 210 43 198 L60 148 L64 203 L60 255 Q57 275 53 303 L49 359 Q49 369 60 370 L76 370 Q82 369 83 358 L95 291 L105 257 L115 291 L127 358 Q128 369 137 370 L153 370 Q164 369 161 358 L157 303 Q153 275 150 255 L146 203 L160 148 L177 198 Q181 210 190 208 Q199 205 197 194 L185 141 C180 116 176 96 168 86 C158 75 145 72 132 68 L135 57 C137 43 132 30 119 28 Z"/>
-     <path class="body-outline" d="M91 68 Q110 82 129 68 L139 83 L133 105 L87 105 L81 83 Z"/>
-     <path class="body-outline" d="M87 105 Q110 113 133 105 L143 166 Q139 188 139 205 L81 205 Q81 188 77 166 Z"/>
-    </g>
+  <div class="anatomy anatomy-detailed premium-anatomy">
+   <figure class="bodymap"><div class="map-kicker">ANTERIOR CHAIN</div><svg viewBox="0 0 220 430" role="img" aria-label="Silhouette musculaire vue de face">
+    <defs><linearGradient id="skinFront" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#555d68"/><stop offset=".48" stop-color="#353b45"/><stop offset="1" stop-color="#252a32"/></linearGradient><linearGradient id="muscleFront" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#858e9b"/><stop offset="1" stop-color="#454c57"/></linearGradient></defs>
+    <g class="body-base"><path class="body-outline" d="M91 26 Q82 30 83 48 L88 65 Q72 68 56 78 Q43 87 39 111 L25 181 Q22 194 31 198 Q39 201 44 187 L60 132 L63 190 L60 242 Q57 266 53 299 L48 394 Q48 405 61 405 L75 405 Q84 404 85 392 L100 298 L110 273 L120 298 L135 392 Q136 405 149 405 L163 405 Q175 404 172 392 L167 299 Q163 266 160 242 L157 190 L160 132 L176 187 Q181 201 189 198 Q198 194 195 181 L181 111 Q177 87 164 78 Q148 68 132 65 L137 48 Q138 30 129 26 Q110 19 91 26Z"/><path class="body-outline" d="M89 64 Q110 78 131 64 L139 82 L132 104 L88 104 L81 82Z"/></g>
     <g class="muscle-layer">
-     <path id="front-shoulder-l" class="muscle-shape" d="M86 76 Q69 73 58 88 Q52 100 61 113 Q72 119 82 106 L91 91 Z"/>
-     <path id="front-shoulder-r" class="muscle-shape" d="M134 76 Q151 73 162 88 Q168 100 159 113 Q148 119 138 106 L129 91 Z"/>
-     <path id="front-chest-l" class="muscle-shape" d="M88 91 Q102 84 109 96 L108 126 Q94 132 79 120 Q73 111 78 101 Z"/>
-     <path id="front-chest-r" class="muscle-shape" d="M132 91 Q118 84 111 96 L112 126 Q126 132 141 120 Q147 111 142 101 Z"/>
-     <path id="front-biceps-l" class="muscle-shape" d="M59 112 Q68 117 78 108 L72 148 Q68 159 61 153 Q55 145 59 112 Z"/>
-     <path id="front-biceps-r" class="muscle-shape" d="M161 112 Q152 117 142 108 L148 148 Q152 159 159 153 Q165 145 161 112 Z"/>
-     <path id="front-core" class="muscle-shape" d="M91 130 Q110 135 129 130 L132 195 Q110 204 88 195 Z"/>
-     <path class="muscle-detail" d="M110 134 L110 198 M89 151 Q110 157 131 151 M88 173 Q110 179 132 173"/>
-     <path class="muscle-detail" d="M86 205 Q75 217 71 241 L68 278 Q80 284 94 278 L105 230 L110 208 Z"/>
-     <path class="muscle-detail" d="M134 205 Q145 217 149 241 L152 278 Q140 284 126 278 L115 230 L110 208 Z"/>
-     <path class="muscle-detail" d="M76 282 L70 357 M144 282 L150 357"/>
-    </g>
-    <g class="muscle-labels"><text x="110" y="15">ANTÉRIEUR</text></g>
-   </svg><figcaption><span>01</span> FACE <small>ANTÉRIEUR</small></figcaption></figure>
-   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Carte musculaire de dos"><defs><linearGradient id="bodyToneBack" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#424851"/><stop offset=".5" stop-color="#30353d"/><stop offset="1" stop-color="#22262d"/></linearGradient></defs>
-    <g class="anatomy-base">
-     <path class="body-outline" d="M101 28 C88 30 83 43 85 57 L88 68 C75 72 62 75 52 86 C44 96 40 116 35 141 L23 194 Q21 205 30 208 Q39 210 43 198 L60 148 L64 203 L60 255 Q57 275 53 303 L49 359 Q49 369 60 370 L76 370 Q82 369 83 358 L95 291 L105 257 L115 291 L127 358 Q128 369 137 370 L153 370 Q164 369 161 358 L157 303 Q153 275 150 255 L146 203 L160 148 L177 198 Q181 210 190 208 Q199 205 197 194 L185 141 C180 116 176 96 168 86 C158 75 145 72 132 68 L135 57 C137 43 132 30 119 28 Z"/>
-     <path class="body-outline" d="M91 68 Q110 82 129 68 L139 83 L133 105 L87 105 L81 83 Z"/>
-     <path class="body-outline" d="M87 105 Q110 113 133 105 L143 166 Q139 188 139 205 L81 205 Q81 188 77 166 Z"/>
-    </g>
+     <path id="front-delt-l" class="muscle-shape" d="M84 75 Q68 69 55 83 Q48 96 57 111 Q67 120 81 107 L92 88Z"/><path id="front-delt-r" class="muscle-shape" d="M136 75 Q152 69 165 83 Q172 96 163 111 Q153 120 139 107 L128 88Z"/>
+     <path id="front-pec-l" class="muscle-shape" d="M88 91 Q100 83 109 94 L108 127 Q94 134 77 122 Q70 113 77 101Z"/><path id="front-pec-r" class="muscle-shape" d="M132 91 Q120 83 111 94 L112 127 Q126 134 143 122 Q150 113 143 101Z"/>
+     <path id="front-biceps-l" class="muscle-shape" d="M57 111 Q67 119 80 108 L74 153 Q69 166 60 157 Q53 146 57 111Z"/><path id="front-biceps-r" class="muscle-shape" d="M163 111 Q153 119 140 108 L146 153 Q151 166 160 157 Q167 146 163 111Z"/>
+     <path id="front-forearm-l" class="muscle-shape" d="M59 161 Q68 168 74 156 L68 209 Q63 219 55 210 Q50 200 59 161Z"/><path id="front-forearm-r" class="muscle-shape" d="M161 161 Q152 168 146 156 L152 209 Q157 219 165 210 Q170 200 161 161Z"/>
+     <path id="front-abs-upper" class="muscle-shape" d="M91 130 Q110 136 129 130 L130 163 Q110 169 90 163Z"/><path id="front-abs-lower" class="muscle-shape" d="M90 167 Q110 173 130 167 L132 207 Q110 215 88 207Z"/>
+     <path id="front-oblique-l" class="muscle-shape" d="M82 130 L90 133 L87 202 Q78 197 74 178Z"/><path id="front-oblique-r" class="muscle-shape" d="M138 130 L130 133 L133 202 Q142 197 146 178Z"/>
+     <path id="front-quad-l" class="muscle-shape" d="M83 218 Q98 219 105 231 L96 296 Q91 319 78 340 L66 335 L70 270Z"/><path id="front-quad-r" class="muscle-shape" d="M137 218 Q122 219 115 231 L124 296 Q129 319 142 340 L154 335 L150 270Z"/>
+     <path id="front-calf-l" class="muscle-shape" d="M66 341 Q78 344 85 333 L80 389 Q77 399 65 396 L58 389Z"/><path id="front-calf-r" class="muscle-shape" d="M154 341 Q142 344 135 333 L140 389 Q143 399 155 396 L162 389Z"/>
+     <path class="muscle-detail" d="M110 136 L110 208 M90 149 Q110 155 130 149 M89 183 Q110 189 131 183 M110 225 L110 288 M78 250 Q90 260 100 253 M142 250 Q130 260 120 253"/>
+    </g></svg><figcaption><b>01</b> FACE <small>ANTÉRIEUR</small></figcaption></figure>
+   <figure class="bodymap"><div class="map-kicker">POSTERIOR CHAIN</div><svg viewBox="0 0 220 430" role="img" aria-label="Silhouette musculaire vue de dos">
+    <defs><linearGradient id="skinBack" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#555d68"/><stop offset=".48" stop-color="#353b45"/><stop offset="1" stop-color="#252a32"/></linearGradient></defs>
+    <g class="body-base"><path class="body-outline" d="M91 26 Q82 30 83 48 L88 65 Q72 68 56 78 Q43 87 39 111 L25 181 Q22 194 31 198 Q39 201 44 187 L60 132 L63 190 L60 242 Q57 266 53 299 L48 394 Q48 405 61 405 L75 405 Q84 404 85 392 L100 298 L110 273 L120 298 L135 392 Q136 405 149 405 L163 405 Q175 404 172 392 L167 299 Q163 266 160 242 L157 190 L160 132 L176 187 Q181 201 189 198 Q198 194 195 181 L181 111 Q177 87 164 78 Q148 68 132 65 L137 48 Q138 30 129 26 Q110 19 91 26Z"/><path class="body-outline" d="M89 64 Q110 78 131 64 L139 82 L132 104 L88 104 L81 82Z"/></g>
     <g class="muscle-layer">
-     <path id="back-rear-l" class="muscle-shape" d="M85 77 Q68 73 58 88 Q53 100 62 113 Q72 117 83 105 L92 91 Z"/>
-     <path id="back-rear-r" class="muscle-shape" d="M135 77 Q152 73 162 88 Q167 100 158 113 Q148 117 137 105 L128 91 Z"/>
-     <path id="back-traps" class="muscle-shape" d="M92 76 Q110 88 128 76 L137 101 L110 137 L83 101 Z"/>
-     <path id="back-lats-l" class="muscle-shape" d="M84 112 Q96 116 106 137 L104 190 Q91 190 80 174 L75 137 Z"/>
-     <path id="back-lats-r" class="muscle-shape" d="M136 112 Q124 116 114 137 L116 190 Q129 190 140 174 L145 137 Z"/>
-     <path id="back-triceps-l" class="muscle-shape" d="M59 112 Q68 117 78 108 L72 148 Q68 159 61 153 Q55 145 59 112 Z"/>
-     <path id="back-triceps-r" class="muscle-shape" d="M161 112 Q152 117 142 108 L148 148 Q152 159 159 153 Q165 145 161 112 Z"/>
-     <path class="muscle-detail" d="M110 88 L110 198 M88 137 Q110 150 132 137 M82 166 Q110 185 138 166"/>
-     <path class="muscle-detail" d="M86 205 Q75 217 71 241 L68 278 Q80 284 94 278 L105 230 L110 208 Z"/>
-     <path class="muscle-detail" d="M134 205 Q145 217 149 241 L152 278 Q140 284 126 278 L115 230 L110 208 Z"/>
-     <path class="muscle-detail" d="M76 282 L70 357 M144 282 L150 357"/>
-    </g>
-    <g class="muscle-labels"><text x="110" y="15">POSTÉRIEUR</text></g>
-   </svg><figcaption><span>02</span> DOS <small>POSTÉRIEUR</small></figcaption></figure>
-  </div><div class="legend" id="anatomyLegend"></div></div>
+     <path id="back-trap-upper" class="muscle-shape" d="M91 73 Q110 88 129 73 L139 104 L110 137 L81 104Z"/>
+     <path id="back-rear-delt-l" class="muscle-shape" d="M84 76 Q67 70 55 84 Q49 98 59 112 Q70 119 83 105 L94 88Z"/><path id="back-rear-delt-r" class="muscle-shape" d="M136 76 Q153 70 165 84 Q171 98 161 112 Q150 119 137 105 L126 88Z"/>
+     <path id="back-triceps-l" class="muscle-shape" d="M59 112 Q68 119 80 108 L74 154 Q68 167 60 157 Q53 146 59 112Z"/><path id="back-triceps-r" class="muscle-shape" d="M161 112 Q152 119 140 108 L146 154 Q152 167 160 157 Q167 146 161 112Z"/>
+     <path id="back-forearm-l" class="muscle-shape" d="M59 161 Q68 168 74 156 L68 209 Q63 219 55 210 Q50 200 59 161Z"/><path id="back-forearm-r" class="muscle-shape" d="M161 161 Q152 168 146 156 L152 209 Q157 219 165 210 Q170 200 161 161Z"/>
+     <path id="back-rhomboid-l" class="muscle-shape" d="M91 111 Q101 115 108 137 L106 165 L88 157 L82 130Z"/><path id="back-rhomboid-r" class="muscle-shape" d="M129 111 Q119 115 112 137 L114 165 L132 157 L138 130Z"/>
+     <path id="back-lat-l" class="muscle-shape" d="M83 119 Q96 127 105 151 L103 202 Q88 198 78 180 L74 143Z"/><path id="back-lat-r" class="muscle-shape" d="M137 119 Q124 127 115 151 L117 202 Q132 198 142 180 L146 143Z"/>
+     <path id="back-glute-l" class="muscle-shape" d="M84 211 Q98 205 109 216 L106 257 Q96 268 80 257 Q73 239 84 211Z"/><path id="back-glute-r" class="muscle-shape" d="M136 211 Q122 205 111 216 L114 257 Q124 268 140 257 Q147 239 136 211Z"/>
+     <path id="back-ham-l" class="muscle-shape" d="M82 264 Q97 267 106 258 L99 328 Q91 346 77 341 L70 301Z"/><path id="back-ham-r" class="muscle-shape" d="M138 264 Q123 267 114 258 L121 328 Q129 346 143 341 L150 301Z"/>
+     <path id="back-calf-l" class="muscle-shape" d="M77 346 Q88 349 96 337 L82 391 Q77 399 65 396 L59 388Z"/><path id="back-calf-r" class="muscle-shape" d="M143 346 Q132 349 124 337 L138 391 Q143 399 155 396 L161 388Z"/>
+     <path class="muscle-detail" d="M110 91 L110 203 M90 145 Q110 160 130 145 M78 176 Q110 197 142 176 M110 217 L110 259 M91 277 L84 329 M129 277 L136 329"/>
+    </g></svg><figcaption><b>02</b> DOS <small>POSTÉRIEUR</small></figcaption></figure>
+  </div>
+  <div class="map-legend"><span><i class="dot primary"></i> Muscle principal</span><span><i class="dot secondary"></i> Muscle secondaire</span></div>
+  <div class="legend" id="anatomyLegend"></div></div>
 </section>
 
 <section class="page" id="page-profile">
@@ -167,7 +175,7 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
  <div class="panel"><div class="split"><h3>Coach de progression</h3><span class="pill">AUTO</span></div><p class="muted">Le coach analyse la dernière séance enregistrée pour chaque exercice. Il propose une hausse prudente lorsque toutes les séries et répétitions prévues sont réalisées. Applique uniquement si la technique est maîtrisée et qu'il reste 1 à 3 répétitions en réserve.</p><div id="coachContent"></div></div>
  <div class="panel"><h3>Sauvegarde & données</h3><p class="notice">Les données sont stockées localement dans Safari sur cet iPhone. Elles ne sont pas synchronisées automatiquement entre appareils. Exporte régulièrement une sauvegarde JSON dans Fichiers ou iCloud Drive. L'import remplace les données présentes sur cet appareil.</p><div class="tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="exportData">⇧ Exporter JSON</button><label class="btn secondary filelabel" for="importFile">⇩ Importer JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice" id="backupMessage" aria-live="polite"></div></div>
  <div class="panel danger-zone"><h3>Réinitialisation</h3><p class="notice">Cette action efface les données locales de Muscu Tracker dans Safari. Fais une sauvegarde avant.</p><button class="btn danger" id="resetData">Réinitialiser les données</button></div>
- <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V3.3 · Conçu pour ton suivi personnel</div>
+ <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V3.5 · Conçu pour ton suivi personnel</div>
 </section>
 </main>
 
@@ -250,8 +258,8 @@ function drawChart(){const name=$('chartExercise').value,canvas=$('chart'),ctx=c
 function stepFor(ex){if(ex.name.toLowerCase().includes('frontale croisée'))return .5;if((ex.unit||'').includes('main'))return 1;return 2.5}
 function latestRecord(name){for(let i=state.history.length-1;i>=0;i--){const h=state.history[i],ex=(h.exercises||[]).find(x=>x.name===name);if(ex)return{h,ex}}return null}
 function renderCoach(){const host=$('coachContent');host.innerHTML='';let suggestions=0;allExercises().forEach(ex=>{const rec=latestRecord(ex.name);if(!rec||!rec.ex.sets)return;const complete=Number(rec.ex.sets)>=ex.sets&&Number(rec.ex.reps)>=ex.reps;const card=document.createElement('div');card.className='coach-item';const title=document.createElement('strong');title.textContent=ex.name;const p=document.createElement('p');if(complete){const next=Number(rec.ex.weight)+stepFor(ex);p.textContent='Objectif atteint : '+rec.ex.sets+'/'+ex.sets+' séries de '+rec.ex.reps+' répétitions. Proposition : tester '+next+' '+ex.unit+' à la prochaine séance, si la technique reste propre et qu’il te reste 1 à 3 répétitions en réserve.';const btn=document.createElement('button');btn.className='btn secondary small';btn.textContent='Appliquer '+next+' '+ex.unit;btn.addEventListener('click',()=>{const found=findPlan(ex.name);if(!found)return;state.weights[k(found.day,found.index)]=next;persist();if(day===found.day)renderWorkout();p.textContent='Nouvelle charge enregistrée : '+next+' '+ex.unit+'.';btn.disabled=true;btn.textContent='Charge appliquée ✓'});card.append(title,p,btn);suggestions++}else{p.textContent='Dernière fois : '+rec.ex.sets+'/'+ex.sets+' séries de '+rec.ex.reps+' répétitions à '+rec.ex.weight+' '+ex.unit+'. Consolide les séries et les répétitions avant d’augmenter.';card.append(title,p)}host.append(card)});if(!suggestions){const note=document.createElement('div');note.className='empty';note.textContent=state.history.length?'Pas encore de hausse proposée : continue à consolider tes séries.':'Enregistre une séance pour obtenir tes premières recommandations.';host.append(note)}}
-function muscleIds(){return {'Pectoraux':['front-chest-l','front-chest-r'],'Épaules avant':['front-shoulder-l','front-shoulder-r'],'Épaules latérales':['front-shoulder-l','front-shoulder-r'],'Biceps':['front-biceps-l','front-biceps-r'],'Triceps':['back-triceps-l','back-triceps-r'],'Grand dorsal':['back-lats-l','back-lats-r'],'Milieu du dos':['back-traps'],'Haut du dos':['back-traps'],'Épaules arrière':['back-rear-l','back-rear-r']}}
-function renderAnatomy(d){const active=new Set(plans[d].flatMap(e=>e.muscles)),ids=new Set();active.forEach(g=>(muscleIds()[g]||[]).forEach(id=>ids.add(id)));document.querySelectorAll('.muscle-shape').forEach(el=>el.classList.remove('on'));ids.forEach(id=>{const el=$(id);if(el)el.classList.add('on')});renderMuscleLegend(d,'anatomyLegend');document.querySelectorAll('[data-anatomy-day]').forEach(b=>b.classList.toggle('active',b.dataset.anatomyDay===d))}
+function muscleIds(){return {'Pectoraux':['front-pec-l','front-pec-r'],'Épaules avant':['front-delt-l','front-delt-r'],'Épaules latérales':['front-delt-l','front-delt-r'],'Biceps':['front-biceps-l','front-biceps-r'],'Triceps':['back-triceps-l','back-triceps-r'],'Grand dorsal':['back-lat-l','back-lat-r'],'Milieu du dos':['back-rhomboid-l','back-rhomboid-r'],'Haut du dos':['back-trap-upper','back-rhomboid-l','back-rhomboid-r'],'Épaules arrière':['back-rear-delt-l','back-rear-delt-r']}}
+function renderAnatomy(d){const groups=plans[d].flatMap(e=>e.muscles),primary=groups[0],map=muscleIds(),primaryIds=new Set(map[primary]||[]),allIds=new Set(groups.flatMap(g=>map[g]||[]));document.querySelectorAll('.muscle-shape').forEach(el=>{el.classList.remove('on','secondary')});allIds.forEach(id=>{const el=$(id);if(el)el.classList.add(primaryIds.has(id)?'on':'secondary')});renderMuscleLegend(d,'anatomyLegend');document.querySelectorAll('[data-anatomy-day]').forEach(b=>b.classList.toggle('active',b.dataset.anatomyDay===d))}
 function renderMuscleLegend(d,id){const host=$(id);host.innerHTML='';[...new Set(plans[d].flatMap(e=>e.muscles))].forEach(g=>{const c=document.createElement('span');c.className='chip';c.textContent=g;host.append(c)})}
 function weekly(){const now=new Date(),monday=new Date(now);monday.setHours(0,0,0,0);monday.setDate(now.getDate()-((now.getDay()+6)%7));const n=state.history.filter(h=>new Date(h.date)>=monday).length,goal=Number(state.settings.weeklyGoal)||3;$('weeklyCount').textContent=n+' / '+goal+' séances';$('weeklyBar').style.width=Math.min(100,n/goal*100)+'%'}
 function recent(){const host=$('recentHome');host.innerHTML='';const h=state.history.at(-1);if(!h){host.innerHTML='<div class="empty">Aucune séance enregistrée pour le moment.</div>';return}const b=document.createElement('div');b.innerHTML='<strong></strong><small class="muted" style="display:block;margin-top:5px"></small>';b.querySelector('strong').textContent=fmtDate(h.date)+' · Séance '+h.day;b.querySelector('small').textContent=h.sets+' séries · '+Math.round(h.volume)+' kg × reps';host.append(b)}
