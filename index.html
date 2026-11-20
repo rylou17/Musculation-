@@ -8,7 +8,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Muscu Tracker V3.3</title>
+<title>Muscu Tracker V3.4</title>
 <style>
 :root{color-scheme:dark;--bg:#101113;--panel:#191b1f;--panel2:#202329;--line:#30343b;--ink:#f4f4f5;--muted:#9b9fa8;--orange:#ff791f;--orange2:#ff9a50;--soft:#392519;--green:#55c58a;--red:#ff6262;--radius:18px}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#302016 0%,var(--bg) 44%);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 calc(92px + env(safe-area-inset-bottom));min-height:100vh}
@@ -38,6 +38,28 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
 .muscle-detail{fill:none;stroke:#777f89;stroke-width:1.15;stroke-linecap:round;opacity:.65}
 .muscle-labels text{fill:#9ba1aa;font-size:8px;font-weight:900;letter-spacing:1.5px;text-anchor:middle}
 .anatomy-detailed figcaption{font-size:10px;letter-spacing:.12em}
+
+
+/* V3.4 — premium fitness anatomy presentation */
+.anatomy-panel{padding:16px;background:linear-gradient(155deg,#1c1f24 0%,#15171b 62%,#191714 100%);border-color:#363a42;box-shadow:0 16px 38px #0003}
+.anatomy-intro{margin:9px 0 15px;font-size:11px}
+.anatomy-detailed{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));}
+.anatomy-detailed .bodymap{position:relative;overflow:hidden;min-width:0;margin:0;padding:10px 4px 12px;border-radius:18px;border:1px solid #373c45;background:radial-gradient(ellipse at 50% 42%,#30343b 0%,#1b1e23 48%,#141619 100%);box-shadow:inset 0 1px #ffffff08,0 8px 22px #0002}
+.anatomy-detailed .bodymap:before{content:"";position:absolute;inset:12px 10px 36px;border-radius:50%;background:radial-gradient(ellipse,#ff8a3510,transparent 68%);pointer-events:none}
+.anatomy-detailed .bodymap svg{position:relative;z-index:1;height:clamp(245px,76vw,330px);width:100%;max-width:230px;filter:drop-shadow(0 8px 12px #0005)}
+.anatomy-detailed .body-outline{fill:url(#bodyTone);stroke:#858c96;stroke-width:1.25;opacity:.94}
+.anatomy-detailed .muscle-shape{fill:#626a75;stroke:#a0a8b3;stroke-width:.85;stroke-linejoin:round;transition:fill .25s,filter .25s,opacity .25s;opacity:.94}
+.anatomy-detailed .muscle-shape.on{fill:#ff812d;stroke:#ffd0a7;stroke-width:1.15;filter:drop-shadow(0 0 5px #ff812d88);opacity:1}
+.anatomy-detailed .muscle-detail{stroke:#b0b7c1;stroke-width:.85;opacity:.42}
+.anatomy-detailed figcaption{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:2px;color:#f0f1f3;font-size:10px;font-weight:900;letter-spacing:.16em}
+.anatomy-detailed figcaption span{color:#ff9a50;font-size:9px}
+.anatomy-detailed figcaption small{color:#858b95;font-size:8px;font-weight:700;letter-spacing:.1em}
+.anatomy-panel .session-switch{background:#111316;padding:3px;border:1px solid #30343b;border-radius:13px;gap:3px}
+.anatomy-panel .switch{border:0;border-radius:10px;padding:9px 11px;background:transparent;font-size:11px}
+.anatomy-panel .switch.active{background:linear-gradient(135deg,#ff9b50,#f36b1b);color:#1b120d;box-shadow:0 3px 12px #ff791f33}
+.anatomy-panel .legend{gap:6px;margin-top:13px}
+.anatomy-panel .chip{border:1px solid #704322;background:#302117;color:#ffc092;padding:7px 10px;font-size:10px}
+@media(max-width:360px){.anatomy-detailed{gap:6px}.anatomy-detailed .bodymap svg{height:238px}.anatomy-detailed figcaption{font-size:9px;letter-spacing:.1em}}
 
 </style>
 </head>
@@ -88,10 +110,10 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
 </section>
 
 <section class="page" id="page-anatomy">
- <div class="sectionhead"><h2>Carte musculaire</h2><span class="pill">ANATOMIE</span></div>
- <div class="panel"><div class="split"><h3>Groupes sollicités</h3><div class="session-switch" style="margin:0;max-width:190px"><button class="switch active" data-anatomy-day="A">A · PUSH</button><button class="switch" data-anatomy-day="B">B · PULL</button></div></div><p class="muted">Schéma indicatif des principaux groupes musculaires travaillés par la séance sélectionnée.</p>
+ <div class="sectionhead"><div><div class="eyebrow">ANALYSE MUSCULAIRE</div><h2>Carte du corps</h2></div><span class="pill">LIVE MAP</span></div>
+ <div class="panel anatomy-panel"><div class="split"><div><h3>Muscles activés</h3><div class="muted">Visualisation par séance</div></div><div class="session-switch" style="margin:0;max-width:190px"><button class="switch active" data-anatomy-day="A">A · PUSH</button><button class="switch" data-anatomy-day="B">B · PULL</button></div></div><p class="muted anatomy-intro">Les zones lumineuses indiquent les principaux groupes musculaires sollicités.</p>
   <div class="anatomy anatomy-detailed">
-   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Schéma musculaire anatomique de face">
+   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Carte musculaire de face"><defs><linearGradient id="bodyTone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#424851"/><stop offset=".5" stop-color="#30353d"/><stop offset="1" stop-color="#22262d"/></linearGradient></defs>
     <g class="anatomy-base">
      <path class="body-outline" d="M101 28 C88 30 83 43 85 57 L88 68 C75 72 62 75 52 86 C44 96 40 116 35 141 L23 194 Q21 205 30 208 Q39 210 43 198 L60 148 L64 203 L60 255 Q57 275 53 303 L49 359 Q49 369 60 370 L76 370 Q82 369 83 358 L95 291 L105 257 L115 291 L127 358 Q128 369 137 370 L153 370 Q164 369 161 358 L157 303 Q153 275 150 255 L146 203 L160 148 L177 198 Q181 210 190 208 Q199 205 197 194 L185 141 C180 116 176 96 168 86 C158 75 145 72 132 68 L135 57 C137 43 132 30 119 28 Z"/>
      <path class="body-outline" d="M91 68 Q110 82 129 68 L139 83 L133 105 L87 105 L81 83 Z"/>
@@ -111,8 +133,8 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
      <path class="muscle-detail" d="M76 282 L70 357 M144 282 L150 357"/>
     </g>
     <g class="muscle-labels"><text x="110" y="15">ANTÉRIEUR</text></g>
-   </svg><figcaption>VUE DE FACE</figcaption></figure>
-   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Schéma musculaire anatomique de dos">
+   </svg><figcaption><span>01</span> FACE <small>ANTÉRIEUR</small></figcaption></figure>
+   <figure class="bodymap"><svg viewBox="0 0 220 390" role="img" aria-label="Carte musculaire de dos"><defs><linearGradient id="bodyToneBack" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#424851"/><stop offset=".5" stop-color="#30353d"/><stop offset="1" stop-color="#22262d"/></linearGradient></defs>
     <g class="anatomy-base">
      <path class="body-outline" d="M101 28 C88 30 83 43 85 57 L88 68 C75 72 62 75 52 86 C44 96 40 116 35 141 L23 194 Q21 205 30 208 Q39 210 43 198 L60 148 L64 203 L60 255 Q57 275 53 303 L49 359 Q49 369 60 370 L76 370 Q82 369 83 358 L95 291 L105 257 L115 291 L127 358 Q128 369 137 370 L153 370 Q164 369 161 358 L157 303 Q153 275 150 255 L146 203 L160 148 L177 198 Q181 210 190 208 Q199 205 197 194 L185 141 C180 116 176 96 168 86 C158 75 145 72 132 68 L135 57 C137 43 132 30 119 28 Z"/>
      <path class="body-outline" d="M91 68 Q110 82 129 68 L139 83 L133 105 L87 105 L81 83 Z"/>
@@ -132,7 +154,7 @@ button,input,select{font:inherit}button{cursor:pointer}main{max-width:760px;marg
      <path class="muscle-detail" d="M76 282 L70 357 M144 282 L150 357"/>
     </g>
     <g class="muscle-labels"><text x="110" y="15">POSTÉRIEUR</text></g>
-   </svg><figcaption>VUE DE DOS</figcaption></figure>
+   </svg><figcaption><span>02</span> DOS <small>POSTÉRIEUR</small></figcaption></figure>
   </div><div class="legend" id="anatomyLegend"></div></div>
 </section>
 
