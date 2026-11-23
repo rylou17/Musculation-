@@ -8,7 +8,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Muscu Tracker V5.4.2</title>
+<title>Muscu Tracker V5.4.4</title>
 <style>
 :root{color-scheme:dark;--bg:#101113;--panel:#191b1f;--panel2:#202329;--line:#30343b;--ink:#f4f4f5;--muted:#9b9fa8;--orange:#ff791f;--orange2:#ff9a50;--soft:#392519;--green:#55c58a;--red:#ff6262;--radius:18px}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#302016 0%,var(--bg) 44%);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 calc(92px + env(safe-area-inset-bottom));min-height:100vh}
@@ -142,7 +142,7 @@ body.session-active{overflow:hidden}body.session-active .bottomnav{display:none}
 @media(max-height:690px){.stage-visual{height:145px;flex:0 0 145px}.stage-metrics{margin:8px 0}.stage-rest{padding:9px}.stage-clock{font-size:48px}.stage-main-action{min-height:52px}}
 
 
-/* V5.4.2 — visuel garanti pour chaque exercice */
+/* V5.4.4 — visuel garanti pour chaque exercice */
 .repdb-generic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:linear-gradient(145deg,#282c33,#171a1f);border:1px solid #454b55;border-radius:12px;overflow:hidden;color:#ffb27c;font-size:9px;font-weight:800;letter-spacing:.08em}.repdb-generic svg{width:100%;height:calc(100% - 16px);max-height:190px}.repdb-generic.catalog-thumb{width:76px;height:76px;flex:0 0 76px}.repdb-generic.catalog-photo{width:100%;height:190px}.repdb-generic.stage-visual{width:100%;height:100%;border:0;border-radius:0}.repdb-generic.stage-visual svg{max-height:100%;padding:8px;box-sizing:border-box}
 
 .repdb-motion img{position:static!important;display:block;width:100%;height:100%;object-fit:contain;animation:none!important}
@@ -152,7 +152,7 @@ body.session-active{overflow:hidden}body.session-active .bottomnav{display:none}
 <body>
 <main>
 <header class="top">
- <div class="brand"><div class="logo">M</div><div><div class="eyebrow">TRAIN SMART · GET STRONGER</div><h1>Muscu Tracker <span style="color:var(--orange)">V5.4.2</span></h1><div class="sub">Ton entraînement. Tes données. Ta progression.</div></div></div>
+ <div class="brand"><div class="logo">M</div><div><div class="eyebrow">TRAIN SMART · GET STRONGER</div><h1>Muscu Tracker <span style="color:var(--orange)">V5.4.4</span></h1><div class="sub">Ton entraînement. Tes données. Ta progression.</div></div></div>
  <div class="top-actions"><button class="iconbtn" id="quickBackup" aria-label="Exporter la sauvegarde">⇧</button></div>
 </header>
 
@@ -215,7 +215,7 @@ body.session-active{overflow:hidden}body.session-active .bottomnav{display:none}
  <div class="panel"><div class="split"><h3>Coach de progression</h3><span class="pill">AUTO</span></div><p class="muted">Le coach analyse la dernière séance enregistrée pour chaque exercice. Il propose une hausse prudente lorsque toutes les séries et répétitions prévues sont réalisées. Applique uniquement si la technique est maîtrisée et qu'il reste 1 à 3 répétitions en réserve.</p><div id="coachContent"></div></div>
  <div class="panel"><h3>Sauvegarde & données</h3><p class="notice">Les données sont stockées localement dans Safari sur cet iPhone. Elles ne sont pas synchronisées automatiquement entre appareils. Exporte régulièrement une sauvegarde JSON dans Fichiers ou iCloud Drive. L'import remplace les données présentes sur cet appareil.</p><div class="tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="exportData">⇧ Exporter JSON</button><label class="btn secondary filelabel" for="importFile">⇩ Importer JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice" id="backupMessage" aria-live="polite"></div></div>
  <div class="panel danger-zone"><h3>Réinitialisation</h3><p class="notice">Cette action efface les données locales de Muscu Tracker dans Safari. Fais une sauvegarde avant.</p><button class="btn danger" id="resetData">Réinitialiser les données</button></div>
- <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V5.4.2 · Conçu pour ton suivi personnel · <a href="https://gymvisual.com/" target="_blank" rel="noopener">GIF animés : © Gym visual</a></div>
+ <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V5.4.4 · Conçu pour ton suivi personnel · <a href="https://gymvisual.com/" target="_blank" rel="noopener">GIF animés : © Gym visual</a></div>
 </section>
 </main>
 
@@ -274,36 +274,46 @@ let restTimers={},activeTimerKey=null,timerInterval=null;
 const $=id=>document.getElementById(id),k=(d,i)=>d+'_'+i;
 try{const old=JSON.parse(localStorage.getItem(KEY)||'null');if(old&&typeof old==='object')state={...state,...old,history:Array.isArray(old.history)?old.history:[],weights:old.weights||{},reps:old.reps||{},restDurations:old.restDurations||{},customExercises:{A:[],B:[],...(old.customExercises||{})},settings:{weeklyGoal:3,defaultRest:90,...(old.settings||{})}};}catch(e){}
 const exerciseCatalog=[
- {name:'Développé incliné haltères',category:'Pectoraux',sets:3,reps:10,weight:8,unit:'kg / main'},
- {name:'Développé décliné haltères',category:'Pectoraux',sets:3,reps:10,weight:8,unit:'kg / main'},
- {name:'Pompes',category:'Pectoraux',sets:3,reps:12,weight:0,unit:'kg'},
- {name:'Écartés inclinés haltères',category:'Pectoraux',sets:3,reps:12,weight:5,unit:'kg / main'},
- {name:'Développé militaire haltères',category:'Épaules',sets:3,reps:10,weight:6,unit:'kg / main'},
- {name:'Élévations latérales à la poulie',category:'Épaules',sets:3,reps:12,weight:5,unit:'kg'},
- {name:'Face pull',category:'Épaules',sets:3,reps:15,weight:10,unit:'kg'},
- {name:'Shrugs haltères',category:'Épaules',sets:3,reps:12,weight:10,unit:'kg / main'},
- {name:'Extension triceps au-dessus de la tête',category:'Triceps',sets:3,reps:12,weight:10,unit:'kg'},
- {name:'Extension triceps corde',category:'Triceps',sets:3,reps:12,weight:12.5,unit:'kg'},
- {name:'Dips assistés',category:'Triceps',sets:3,reps:10,weight:0,unit:'kg'},
- {name:'Tractions assistées',category:'Dos',sets:3,reps:8,weight:0,unit:'kg'},
- {name:'Tirage poitrine prise neutre',category:'Dos',sets:3,reps:12,weight:25,unit:'kg'},
- {name:'Pullover poulie',category:'Dos',sets:3,reps:12,weight:12.5,unit:'kg'},
- {name:'Rowing barre',category:'Dos',sets:3,reps:10,weight:20,unit:'kg'},
- {name:'Rowing poulie basse prise serrée',category:'Dos',sets:3,reps:12,weight:20,unit:'kg'},
- {name:'Curl marteau haltères',category:'Biceps',sets:3,reps:12,weight:6,unit:'kg / main'},
- {name:'Curl incliné haltères',category:'Biceps',sets:3,reps:12,weight:5,unit:'kg / main'},
- {name:'Curl pupitre',category:'Biceps',sets:3,reps:12,weight:10,unit:'kg'},
- {name:'Squat goblet',category:'Jambes',sets:3,reps:12,weight:12,unit:'kg'},
- {name:'Squat haltères',category:'Jambes',sets:3,reps:10,weight:10,unit:'kg / main'},
- {name:'Fentes marchées',category:'Jambes',sets:3,reps:10,weight:6,unit:'kg / main'},
- {name:'Fentes bulgares',category:'Jambes',sets:3,reps:10,weight:5,unit:'kg / main'},
- {name:'Soulevé de terre roumain haltères',category:'Jambes',sets:3,reps:10,weight:10,unit:'kg / main'},
- {name:'Hip thrust',category:'Jambes',sets:3,reps:12,weight:20,unit:'kg'},
- {name:'Leg curl',category:'Jambes',sets:3,reps:12,weight:15,unit:'kg'},
- {name:'Mollets debout',category:'Jambes',sets:3,reps:15,weight:10,unit:'kg / main'},
- {name:'Crunch',category:'Abdominaux',sets:3,reps:15,weight:0,unit:'kg'},
- {name:'Gainage planche',category:'Abdominaux',sets:3,reps:30,weight:0,unit:'secondes'},
- {name:'Relevés de genoux',category:'Abdominaux',sets:3,reps:12,weight:0,unit:'kg'}
+ {name:"Développé couché haltères",category:"Pectoraux",sets:3,reps:12,weight:8,unit:"kg / main",muscles:["Pectoraux", "triceps"]},
+ {name:"Développé incliné haltères",category:"Pectoraux",sets:3,reps:10,weight:8,unit:"kg / main",muscles:["Haut des pectoraux", "épaules avant"]},
+ {name:"Développé décliné haltères",category:"Pectoraux",sets:3,reps:10,weight:8,unit:"kg / main",muscles:["Pectoraux", "triceps"]},
+ {name:"Écartés couchés haltères",category:"Pectoraux",sets:3,reps:12,weight:5,unit:"kg / main",muscles:["Pectoraux"]},
+ {name:"Écartés inclinés haltères",category:"Pectoraux",sets:3,reps:12,weight:5,unit:"kg / main",muscles:["Haut des pectoraux"]},
+ {name:"Écartés poulie vis-à-vis",category:"Pectoraux",sets:3,reps:12,weight:10,unit:"kg",muscles:["Pectoraux"]},
+ {name:"Pompes",category:"Pectoraux",sets:3,reps:12,weight:0,unit:"kg",muscles:["Pectoraux", "triceps"]},
+ {name:"Tirage vertical poulie haute",category:"Dos",sets:3,reps:12,weight:25,unit:"kg",muscles:["Grand dorsal", "biceps"]},
+ {name:"Tirage bras tendus poulie",category:"Dos",sets:3,reps:12,weight:12.5,unit:"kg",muscles:["Grand dorsal"]},
+ {name:"Tirage horizontal poulie basse",category:"Dos",sets:3,reps:12,weight:20,unit:"kg",muscles:["Dos", "biceps"]},
+ {name:"Rowing poulie prise V",category:"Dos",sets:3,reps:12,weight:20,unit:"kg",muscles:["Dos", "biceps"]},
+ {name:"Rowing haltères buste penché",category:"Dos",sets:3,reps:12,weight:10,unit:"kg / main",muscles:["Dos", "biceps"]},
+ {name:"Rowing haltère un bras",category:"Dos",sets:3,reps:12,weight:10,unit:"kg",muscles:["Grand dorsal", "milieu du dos"]},
+ {name:"Pull-over haltère",category:"Dos",sets:3,reps:12,weight:10,unit:"kg",muscles:["Grand dorsal", "pectoraux"]},
+ {name:"Élévations latérales haltères",category:"Épaules",sets:3,reps:12,weight:4,unit:"kg / main",muscles:["Deltoïdes latéraux"]},
+ {name:"Élévations frontales haltères",category:"Épaules",sets:3,reps:12,weight:5,unit:"kg / main",muscles:["Deltoïdes antérieurs"]},
+ {name:"Élévations latérales poulie",category:"Épaules",sets:3,reps:12,weight:5,unit:"kg",muscles:["Deltoïdes latéraux"]},
+ {name:"Développé épaules haltères",category:"Épaules",sets:3,reps:10,weight:6,unit:"kg / main",muscles:["Épaules", "triceps"]},
+ {name:"Développé Arnold",category:"Épaules",sets:3,reps:10,weight:6,unit:"kg / main",muscles:["Épaules"]},
+ {name:"Oiseau haltères",category:"Épaules",sets:3,reps:15,weight:3,unit:"kg / main",muscles:["Deltoïdes postérieurs"]},
+ {name:"Curl biceps haltères",category:"Biceps",sets:3,reps:12,weight:8,unit:"kg / main",muscles:["Biceps"]},
+ {name:"Curl marteau haltères",category:"Biceps",sets:3,reps:12,weight:6,unit:"kg / main",muscles:["Biceps", "brachial"]},
+ {name:"Curl concentration",category:"Biceps",sets:3,reps:12,weight:6,unit:"kg",muscles:["Biceps"]},
+ {name:"Curl incliné haltères",category:"Biceps",sets:3,reps:12,weight:5,unit:"kg / main",muscles:["Biceps"]},
+ {name:"Curl pupitre poulie",category:"Biceps",sets:3,reps:12,weight:10,unit:"kg",muscles:["Biceps"]},
+ {name:"Extension triceps poulie barre",category:"Triceps",sets:3,reps:12,weight:15,unit:"kg",muscles:["Triceps"]},
+ {name:"Extension triceps corde",category:"Triceps",sets:3,reps:12,weight:12.5,unit:"kg",muscles:["Triceps"]},
+ {name:"Extension triceps couché haltères",category:"Triceps",sets:3,reps:12,weight:6,unit:"kg / main",muscles:["Triceps"]},
+ {name:"Extension triceps debout haltère",category:"Triceps",sets:3,reps:12,weight:8,unit:"kg",muscles:["Triceps"]},
+ {name:"Extension triceps assis haltère",category:"Triceps",sets:3,reps:12,weight:8,unit:"kg",muscles:["Triceps"]},
+ {name:"Squat goblet",category:"Jambes",sets:3,reps:12,weight:12,unit:"kg",muscles:["Quadriceps", "fessiers"]},
+ {name:"Squat haltères",category:"Jambes",sets:3,reps:10,weight:10,unit:"kg / main",muscles:["Quadriceps", "fessiers"]},
+ {name:"Fentes avant haltères",category:"Jambes",sets:3,reps:10,weight:6,unit:"kg / main",muscles:["Quadriceps", "fessiers"]},
+ {name:"Fentes arrière haltères",category:"Jambes",sets:3,reps:10,weight:6,unit:"kg / main",muscles:["Quadriceps", "fessiers"]},
+ {name:"Soulevé de terre roumain haltères",category:"Jambes",sets:3,reps:10,weight:10,unit:"kg / main",muscles:["Ischio-jambiers", "fessiers"]},
+ {name:"Soulevé de terre jambes tendues haltères",category:"Jambes",sets:3,reps:10,weight:10,unit:"kg / main",muscles:["Ischio-jambiers", "fessiers"]},
+ {name:"Crunch poulie haute",category:"Abdominaux",sets:3,reps:15,weight:15,unit:"kg",muscles:["Abdominaux"]},
+ {name:"Crunch au sol",category:"Abdominaux",sets:3,reps:15,weight:0,unit:"kg",muscles:["Abdominaux"]},
+ {name:"Russian twist lesté",category:"Abdominaux",sets:3,reps:20,weight:5,unit:"kg",muscles:["Obliques"]},
+ {name:"Gainage latéral incliné",category:"Abdominaux",sets:3,reps:30,weight:0,unit:"secondes",muscles:["Obliques"]}
 ];
 // Restaure l'ordre et la composition des programmes si une version récente les a enregistrés.
 const basePlans=JSON.parse(JSON.stringify(plans));
@@ -395,116 +405,124 @@ const muscleSearchAliases={
  'mollet':['mollet','mollets','gastrocnemien','soleaire','pointe des pieds']
 };
 function exerciseSearchTerms(ex){const d=detailFor(ex),base=[ex.name,ex.category,d.muscles,...(ex.muscles||[])].join(' '),n=normalizeMuscleText(base),terms=[n];Object.entries(muscleSearchAliases).forEach(([key,aliases])=>{if(aliases.some(a=>n.includes(normalizeMuscleText(a))))terms.push(key,...aliases.map(normalizeMuscleText))});const c=normalizeMuscleText(ex.category);if(c==='jambes')terms.push('cuisse','cuisses','quadriceps','fessiers','mollets','ischio jambiers');if(c==='dos')terms.push('dorsal','dorsaux','trapeze','lombaire');if(c==='epaules')terms.push('epaule');return normalizeMuscleText(terms.join(' '))}
-// Gym Visual — GIF animés exacts (180×180). Les correspondances reposent sur le nom anglais exact.
- const GYMVISUAL_DATA_URL='https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/data/exercises.json';
+// Gym Visual — 40 correspondances exactes issues du fichier exercises.json fourni.
  const GYMVISUAL_ASSET_BASE='https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/';
  const GYMVISUAL_ATTRIBUTION='© Gym visual — https://gymvisual.com/';
- let gymVisualIndex=null,gymVisualLoading=false,gymVisualLoadPromise=null,gymVisualError=false;
- // Alias anglais correspondant précisément aux mouvements du catalogue Muscu Tracker.
+ const GYMVISUAL_RECORDS={
+  "dumbbell bench press":{name:"dumbbell bench press",gif_url:"videos/0289-SpYC0Kp.gif",id:"0289"},
+  "dumbbell incline bench press":{name:"dumbbell incline bench press",gif_url:"videos/0314-ns0SIbU.gif",id:"0314"},
+  "dumbbell decline bench press":{name:"dumbbell decline bench press",gif_url:"videos/0301-DwhEmmE.gif",id:"0301"},
+  "dumbbell fly":{name:"dumbbell fly",gif_url:"videos/0308-yz9nUhF.gif",id:"0308"},
+  "dumbbell incline fly":{name:"dumbbell incline fly",gif_url:"videos/0319-ESOd5Pl.gif",id:"0319"},
+  "cable middle fly":{name:"cable middle fly",gif_url:"videos/0188-xLYSdtg.gif",id:"0188"},
+  "push up":{name:"push-up",gif_url:"videos/0662-I4hDWkc.gif",id:"0662"},
+  "cable lat pulldown full range of motion":{name:"cable lat pulldown full range of motion",gif_url:"videos/2330-LEprlgG.gif",id:"2330"},
+  "cable straight arm pulldown":{name:"cable straight arm pulldown",gif_url:"videos/0238-x69MAlq.gif",id:"0238"},
+  "cable straight back seated row":{name:"cable straight back seated row",gif_url:"videos/0239-Tq6gbK6.gif",id:"0239"},
+  "cable standing row v bar":{name:"cable standing row (v-bar)",gif_url:"videos/0234-4f8RXP8.gif",id:"0234"},
+  "dumbbell bent over row":{name:"dumbbell bent over row",gif_url:"videos/0293-BJ0Hz5L.gif",id:"0293"},
+  "dumbbell one arm bent over row":{name:"dumbbell one arm bent-over row",gif_url:"videos/0292-C0MA9bC.gif",id:"0292"},
+  "dumbbell pullover":{name:"dumbbell pullover",gif_url:"videos/0375-9XjtHvS.gif",id:"0375"},
+  "dumbbell lateral raise":{name:"dumbbell lateral raise",gif_url:"videos/0334-DsgkuIt.gif",id:"0334"},
+  "dumbbell front raise":{name:"dumbbell front raise",gif_url:"videos/0310-3eGE2JC.gif",id:"0310"},
+  "cable lateral raise":{name:"cable lateral raise",gif_url:"videos/0178-goJ6ezq.gif",id:"0178"},
+  "dumbbell standing overhead press":{name:"dumbbell standing overhead press",gif_url:"videos/0426-A6wtbuL.gif",id:"0426"},
+  "dumbbell arnold press":{name:"dumbbell arnold press",gif_url:"videos/2137-Xy4jlWA.gif",id:"2137"},
+  "dumbbell reverse fly":{name:"dumbbell reverse fly",gif_url:"videos/0383-EAs3xL9.gif",id:"0383"},
+  "dumbbell biceps curl":{name:"dumbbell biceps curl",gif_url:"videos/0294-NbVPDMW.gif",id:"0294"},
+  "dumbbell hammer curl":{name:"dumbbell hammer curl",gif_url:"videos/0313-slDvUAU.gif",id:"0313"},
+  "dumbbell concentration curl":{name:"dumbbell concentration curl",gif_url:"videos/0297-gvsWLQw.gif",id:"0297"},
+  "dumbbell incline curl":{name:"dumbbell incline curl",gif_url:"videos/0318-ae9UoXQ.gif",id:"0318"},
+  "cable preacher curl":{name:"cable preacher curl",gif_url:"videos/0195-P2lNrGL.gif",id:"0195"},
+  "cable pushdown":{name:"cable pushdown",gif_url:"videos/0201-3ZflifB.gif",id:"0201"},
+  "cable pushdown with rope attachment":{name:"cable pushdown (with rope attachment)",gif_url:"videos/0200-dU605di.gif",id:"0200"},
+  "dumbbell lying triceps extension":{name:"dumbbell lying triceps extension",gif_url:"videos/0351-mpKZGWz.gif",id:"0351"},
+  "dumbbell standing triceps extension":{name:"dumbbell standing triceps extension",gif_url:"videos/0430-PdmaD0N.gif",id:"0430"},
+  "dumbbell seated triceps extension":{name:"dumbbell seated triceps extension",gif_url:"videos/2188-kont8Ut.gif",id:"2188"},
+  "dumbbell goblet squat":{name:"dumbbell goblet squat",gif_url:"videos/1760-yn8yg1r.gif",id:"1760"},
+  "dumbbell squat":{name:"dumbbell squat",gif_url:"videos/0413-HsvHqgf.gif",id:"0413"},
+  "dumbbell lunge":{name:"dumbbell lunge",gif_url:"videos/0336-RRWFUcw.gif",id:"0336"},
+  "dumbbell rear lunge":{name:"dumbbell rear lunge",gif_url:"videos/0381-SSsBDwB.gif",id:"0381"},
+  "dumbbell romanian deadlift":{name:"dumbbell romanian deadlift",gif_url:"videos/1459-rR0LJzx.gif",id:"1459"},
+  "dumbbell stiff leg deadlift":{name:"dumbbell stiff leg deadlift",gif_url:"videos/0432-5eLRITT.gif",id:"0432"},
+  "cable kneeling crunch":{name:"cable kneeling crunch",gif_url:"videos/0175-WW95auq.gif",id:"0175"},
+  "crunch floor":{name:"crunch floor",gif_url:"videos/0274-TFqbd8t.gif",id:"0274"},
+  "weighted russian twist":{name:"weighted russian twist",gif_url:"videos/0846-fZFZ704.gif",id:"0846"},
+  "bodyweight incline side plank":{name:"bodyweight incline side plank",gif_url:"videos/3544-5VXmnV5.gif",id:"3544"}
+,
+  "lever seated fly":{name:"lever seated fly",gif_url:"videos/0596-v3xmPAR.gif",id:"0596"} };
  const GYMVISUAL_ALIASES={
-  'Développé couché haltères':['dumbbell bench press','dumbbell chest press'],
-  'Papillon':['lever seated fly','machine chest fly','pec deck fly'],
-  'Élévations latérales':['dumbbell lateral raise'],
-  'Élévation frontale croisée':['dumbbell front raise','dumbbell alternate front raise'],
-  'Triceps poulie barre':['cable pushdown','cable triceps pushdown','cable triceps pushdown with straight bar','cable pushdown with v-bar','cable pushdown with rope attachment','triceps pushdown'],
-  'Tirage vertical':['cable lat pulldown','wide grip lat pulldown'],
-  'Tirage horizontal':['seated cable row'],
-  'Rowing haltère un bras':['dumbbell one arm row','dumbbell single arm row'],
-  'Oiseau haltères':['dumbbell reverse fly','dumbbell rear delt fly'],
-  'Curl biceps':['dumbbell biceps curl'],
-  'Développé incliné haltères':['incline dumbbell press'],
-  'Développé décliné haltères':['decline dumbbell press'],
-  'Pompes':['push up','pushup'],
-  'Écartés inclinés haltères':['incline dumbbell fly'],
-  'Développé militaire haltères':['dumbbell shoulder press'],
-  'Élévations latérales à la poulie':['cable lateral raise'],
-  'Face pull':['cable face pull','face pull'],
-  'Shrugs haltères':['dumbbell shrug'],
-  'Extension triceps au-dessus de la tête':['standing dumbbell triceps extension','overhead dumbbell triceps extension'],
-  'Extension triceps corde':['cable rope triceps pushdown','cable pushdown with rope attachment','triceps pushdown rope'],
-  'Dips assistés':['assisted triceps dip','assisted dip'],
-  'Tractions assistées':['assisted pull up','pull up'],
-  'Tirage poitrine prise neutre':['close grip lat pulldown','neutral grip lat pulldown'],
-  'Pullover poulie':['straight arm pulldown','cable pullover'],
-  'Rowing barre':['bent over barbell row','barbell bent over row'],
-  'Rowing poulie basse prise serrée':['close grip seated cable row','seated cable row'],
-  'Curl marteau haltères':['dumbbell hammer curl','hammer curl'],
-  'Curl incliné haltères':['incline dumbbell curl'],
-  'Curl pupitre':['preacher curl'],
-  'Squat goblet':['dumbbell goblet squat','goblet squat'],
-  'Squat haltères':['dumbbell squat'],
-  'Fentes marchées':['dumbbell walking lunge','walking lunge'],
-  'Fentes bulgares':['dumbbell bulgarian split squat','bulgarian split squat'],
-  'Soulevé de terre roumain haltères':['dumbbell romanian deadlift'],
-  'Hip thrust':['barbell hip thrust','hip thrust'],
-  'Leg curl':['lying leg curl','lying leg curls'],
-  'Mollets debout':['standing calf raise','standing calf raises'],
-  'Crunch':['crunch','basic crunch'],
-  'Gainage planche':['plank','front plank'],
-  'Relevés de genoux':['hanging knee raise','hanging knee raises']
+  "Développé couché haltères":["dumbbell bench press"],
+  "Développé incliné haltères":["dumbbell incline bench press"],
+  "Développé décliné haltères":["dumbbell decline bench press"],
+  "Écartés couchés haltères":["dumbbell fly"],
+  "Écartés inclinés haltères":["dumbbell incline fly"],
+  "Écartés poulie vis-à-vis":["cable middle fly"],
+  "Pompes":["push-up"],
+  "Tirage vertical poulie haute":["cable lat pulldown full range of motion"],
+  "Tirage bras tendus poulie":["cable straight arm pulldown"],
+  "Tirage horizontal poulie basse":["cable straight back seated row"],
+  "Rowing poulie prise V":["cable standing row (v-bar)"],
+  "Rowing haltères buste penché":["dumbbell bent over row"],
+  "Rowing haltère un bras":["dumbbell one arm bent-over row"],
+  "Pull-over haltère":["dumbbell pullover"],
+  "Élévations latérales haltères":["dumbbell lateral raise"],
+  "Élévations frontales haltères":["dumbbell front raise"],
+  "Élévations latérales poulie":["cable lateral raise"],
+  "Développé épaules haltères":["dumbbell standing overhead press"],
+  "Développé Arnold":["dumbbell arnold press"],
+  "Oiseau haltères":["dumbbell reverse fly"],
+  "Curl biceps haltères":["dumbbell biceps curl"],
+  "Curl marteau haltères":["dumbbell hammer curl"],
+  "Curl concentration":["dumbbell concentration curl"],
+  "Curl incliné haltères":["dumbbell incline curl"],
+  "Curl pupitre poulie":["cable preacher curl"],
+  "Extension triceps poulie barre":["cable pushdown"],
+  "Extension triceps corde":["cable pushdown (with rope attachment)"],
+  "Extension triceps couché haltères":["dumbbell lying triceps extension"],
+  "Extension triceps debout haltère":["dumbbell standing triceps extension"],
+  "Extension triceps assis haltère":["dumbbell seated triceps extension"],
+  "Squat goblet":["dumbbell goblet squat"],
+  "Squat haltères":["dumbbell squat"],
+  "Fentes avant haltères":["dumbbell lunge"],
+  "Fentes arrière haltères":["dumbbell rear lunge"],
+  "Soulevé de terre roumain haltères":["dumbbell romanian deadlift"],
+  "Soulevé de terre jambes tendues haltères":["dumbbell stiff leg deadlift"],
+  "Crunch poulie haute":["cable kneeling crunch"],
+  "Crunch au sol":["crunch floor"],
+  "Russian twist lesté":["weighted russian twist"],
+  "Gainage latéral incliné":["bodyweight incline side plank"]
+,
+  "Développé couché haltères":["dumbbell bench press"],
+  "Papillon":["lever seated fly"],
+  "Élévations latérales":["dumbbell lateral raise"],
+  "Élévation frontale croisée":["dumbbell front raise"],
+  "Triceps poulie barre":["cable pushdown"],
+  "Tirage vertical":["cable lat pulldown full range of motion"],
+  "Tirage horizontal":["cable straight back seated row"],
+  "Rowing haltère un bras":["dumbbell one arm bent-over row"],
+  "Oiseau haltères":["dumbbell reverse fly"],
+  "Curl biceps":["dumbbell biceps curl"]
  };
- function gymVisualNormalize(value){return normalizeMuscleText(value).replace(/\b(db)\b/g,'dumbbell').replace(/\b(pullups?)\b/g,'pull up').replace(/\b(pushups?)\b/g,'push up')}
- async function loadGymVisualIndex(){
-  if(gymVisualIndex)return gymVisualIndex;
-  if(gymVisualLoadPromise)return gymVisualLoadPromise;
+ let gymVisualIndex=null,gymVisualLoading=false,gymVisualLoadPromise=null,gymVisualError=false;
+ function gymVisualNormalize(value){return normalizeMuscleText(value).replace(/\\b(db)\\b/g,'dumbbell').replace(/\\b(pullups?)\\b/g,'pull up').replace(/\\b(pushups?)\\b/g,'push up')}
+ function loadGymVisualIndex(){
+  if(gymVisualIndex)return Promise.resolve(gymVisualIndex);
   gymVisualLoading=true;
-  gymVisualError=false;
-  gymVisualLoadPromise=fetch(GYMVISUAL_DATA_URL,{cache:'force-cache'}).then(r=>{
-   if(!r.ok)throw new Error('dataset unavailable ('+r.status+')');
-   return r.json();
-  }).then(data=>{
-   if(!Array.isArray(data))throw new Error('format de base inattendu');
-   const index=new Map();
-   data.forEach(item=>{if(item?.name&&item?.gif_url)index.set(gymVisualNormalize(item.name),item)});
-   gymVisualIndex=index;
-   return index;
-  }).catch(err=>{
-   gymVisualError=true;
-   console.warn('Gym Visual indisponible',err);
-   return null;
-  }).finally(()=>{
-   gymVisualLoading=false;
-   gymVisualLoadPromise=null;
-   refreshGymVisuals();
-   if(immersive?.active)renderStage();
-  });
-  return gymVisualLoadPromise;
+  const index=new Map(Object.values(GYMVISUAL_RECORDS).map(item=>[gymVisualNormalize(item.name),item]));
+  gymVisualIndex=index;
+  gymVisualLoading=false;
+  refreshGymVisuals();
+  return Promise.resolve(index);
  }
  function gymVisualRecord(ex){
   if(!gymVisualIndex)return null;
   const aliases=GYMVISUAL_ALIASES[ex.name]||[];
-  for(const alias of aliases){const found=gymVisualIndex.get(gymVisualNormalize(alias));if(found)return {record:found,level:'exact'};}
-  // Secours : recherche d'une variante du même groupe musculaire, en privilégiant le matériel identique.
-  const d=detailFor(ex),muscleText=gymVisualNormalize([ex.name,ex.category,d.muscles,...(ex.muscles||[])].join(' '));
-  const groups=[
-   {keys:['triceps'],terms:['triceps','upper arms']},
-   {keys:['biceps'],terms:['biceps','upper arms']},
-   {keys:['pector','poitrine','chest'],terms:['pectorals','chest']},
-   {keys:['epaule','delto','shoulder'],terms:['shoulders','deltoids']},
-   {keys:['dos','dorsal','rowing','tirage'],terms:['lats','back','trapezius']},
-   {keys:['quadriceps','cuisse','jambe','squat'],terms:['quads','quadriceps','upper legs']},
-   {keys:['fessier','glute','hip thrust'],terms:['glutes']},
-   {keys:['ischio','leg curl'],terms:['hamstrings','upper legs']},
-   {keys:['mollet','calf'],terms:['calves','lower legs']},
-   {keys:['abdo','gainage','crunch','planche'],terms:['abs','waist']}
-  ];
-  const group=groups.find(g=>g.keys.some(k=>muscleText.includes(gymVisualNormalize(k))));
-  if(!group)return null;
-  const equipmentText=gymVisualNormalize([d.equipment,ex.unit,ex.name].join(' '));
-  const isCable=/poulie|cable/.test(equipmentText),isDumbbell=/halter|dumbbell/.test(equipmentText),isBar=/barre|barbell/.test(equipmentText),isBody=/poids du corps|bodyweight|pompe|traction|dips/.test(equipmentText);
-  let best=null,bestScore=0;
-  for(const item of gymVisualIndex.values()){
-   const target=gymVisualNormalize([item.target,item.category,item.name].join(' '));
-   if(!group.terms.some(t=>target.includes(gymVisualNormalize(t))))continue;
-   const name=gymVisualNormalize(item.name||'');let score=3;
-   if(isCable&&/cable/.test(name))score+=4;
-   if(isDumbbell&&/dumbbell/.test(name))score+=4;
-   if(isBar&&/barbell|barbell|ez bar/.test(name))score+=4;
-   if(isBody&&/bodyweight|push up|pull up|dip/.test(name))score+=3;
-   if(/extension|pushdown|curl|raise|press|row|fly|squat|lunge|plank|crunch/.test(name))score+=1;
-   if(score>bestScore){best=item;bestScore=score;}
+  for(const alias of aliases){
+   const found=gymVisualIndex.get(gymVisualNormalize(alias));
+   if(found)return {record:found,level:'exact'};
   }
-  return best?{record:best,level:'variant'}:null;
+  return null;
  }
  function createGenericExerciseVisual(ex,kind){
   const wrap=document.createElement('div');wrap.className='repdb-generic '+kind;wrap.setAttribute('role','img');wrap.setAttribute('aria-label','Illustration générique pour '+ex.name);
@@ -525,7 +543,7 @@ function exerciseSearchTerms(ex){const d=detailFor(ex),base=[ex.name,ex.category
  function refreshGymVisuals(){if($('catalogPanel').classList.contains('open'))renderCatalog();if($('catalogModal').classList.contains('open')){const current=$('catalogModalBody').querySelector('.catalog-detail-title')?.textContent;const ex=exerciseCatalog.find(x=>x.name===current);if(ex)openExerciseDetail(ex,true)}}
  loadGymVisualIndex();
  function renderCatalog(){const list=$('catalogList'),query=normalizeMuscleText($('catalogSearch').value),category=$('catalogCategory').value,suitability=$('catalogSuitability').value;list.innerHTML='';const existing=new Set(plans[day].map(e=>e.name));const matches=exerciseCatalog.filter(ex=>(category==='Tous'||ex.category===category)&&(suitability==='Tous'||(suitability==='AB'?recommendedSession(ex)==='AB':recommendedSession(ex)===suitability))&&(!query||exerciseSearchTerms(ex).includes(query)));if(!matches.length){list.innerHTML='<div class="catalog-empty">Aucun exercice trouvé pour ce muscle. Essaie un autre terme (ex. dos, bras, cuisses).</div>';return}matches.forEach(ex=>{const row=document.createElement('div');row.className='catalog-item';const detail=detailFor(ex),thumb=createRepdbVisual(ex,'catalog-thumb');const info=document.createElement('div');info.className='catalog-item-info';const name=document.createElement('strong'),meta=document.createElement('small'),tag=document.createElement('span');name.textContent=ex.name;meta.textContent=ex.category+' · '+ex.sets+' × '+ex.reps+' · '+detail.muscles;tag.className='catalog-suitability '+(recommendedSession(ex)==='B'?'b':recommendedSession(ex)==='AB'?'both':'');tag.textContent=recommendedSession(ex)==='AB'?'A + B':('SÉANCE '+recommendedSession(ex));info.append(name,meta,tag);const actions=document.createElement('div');actions.className='catalog-item-actions';const detailBtn=document.createElement('button');detailBtn.type='button';detailBtn.className='detail-btn';detailBtn.textContent='Fiche';detailBtn.addEventListener('click',()=>openExerciseDetail(ex,true));const btn=document.createElement('button');btn.type='button';btn.className='add-btn';btn.textContent=existing.has(ex.name)?'Ajouté':'＋ Ajouter';btn.disabled=existing.has(ex.name);if(btn.disabled){btn.style.opacity='.45';btn.style.background='#555';btn.style.color='#ddd'}btn.addEventListener('click',()=>addCatalogExercise(ex,day));actions.append(detailBtn,btn);const visualWrap=document.createElement('div');visualWrap.className='catalog-visual-wrap';visualWrap.append(thumb);const credit=document.createElement('div');credit.className='catalog-gif-credit';credit.textContent=visualStatus(ex)+(visualStatus(ex)==='GIF exact'?' · © Gym Visual':'');visualWrap.append(credit);row.append(visualWrap,info,actions);list.append(row)})}
-function openExerciseDetail(ex,allowAdd=true){const d=detailFor(ex),body=$('catalogModalBody');body.innerHTML='';const photo=createRepdbVisual(ex,'catalog-photo');body.append(photo);const photoCredit=document.createElement('div');photoCredit.className='muted';photoCredit.style.marginTop='6px';{const v=gymVisualRecord(ex);photoCredit.textContent=v?(v.level==='exact'?GYMVISUAL_ATTRIBUTION+' · GIF exact 180 × 180.':'Variante proche · '+GYMVISUAL_ATTRIBUTION):'Illustration générique · aucun GIF suffisamment proche trouvé.';}body.append(photoCredit);const title=document.createElement('div');title.className='catalog-detail-title';title.id='catalogDetailTitle';title.textContent=ex.name;const meta=document.createElement('div');meta.className='catalog-detail-meta';meta.textContent=(ex.category||ex.muscles?.[0]||'RENFORCEMENT').toUpperCase()+' · '+ex.sets+' SÉRIES · '+ex.reps+' RÉPÉTITIONS';const desc=document.createElement('p');desc.className='catalog-detail-desc';desc.textContent=d.desc;body.append(title,meta,desc);const section=(heading,content)=>{const box=document.createElement('div');box.className='catalog-detail-section';const h=document.createElement('h4');h.textContent=heading;box.append(h);if(Array.isArray(content)){const ol=document.createElement('ol');content.forEach(t=>{const li=document.createElement('li');li.textContent=t;ol.append(li)});box.append(ol)}else{const p=document.createElement('p');p.textContent=content;box.append(p)}body.append(box)};section('MATÉRIEL',d.equipment);section('MUSCLES SOLLICITÉS',d.muscles);section('EXÉCUTION',d.steps);section('CONSEIL TECHNIQUE',d.tip);if(allowAdd){const footer=document.createElement('div');footer.className='catalog-modal-footer';const target=document.createElement('select');target.setAttribute('aria-label','Séance dans laquelle ajouter cet exercice');['A','B'].forEach(dayName=>{const o=document.createElement('option');o.value=dayName;o.textContent='Ajouter à la séance '+dayName;target.append(o)});target.value=day;const add=document.createElement('button');add.type='button';add.className='btn';add.textContent='＋ Ajouter au programme';add.addEventListener('click',()=>{addCatalogExercise(ex,target.value);$('catalogModal').classList.remove('open')});footer.append(target,add);body.append(footer)}$('catalogModal').classList.add('open')}
+function openExerciseDetail(ex,allowAdd=true){const d=detailFor(ex),body=$('catalogModalBody');body.innerHTML='';const photo=createRepdbVisual(ex,'catalog-photo');body.append(photo);const photoCredit=document.createElement('div');photoCredit.className='muted';photoCredit.style.marginTop='6px';{const v=gymVisualRecord(ex);photoCredit.textContent=v?GYMVISUAL_ATTRIBUTION+' · GIF exact 180 × 180.':'Aucun GIF exact disponible.';}body.append(photoCredit);const title=document.createElement('div');title.className='catalog-detail-title';title.id='catalogDetailTitle';title.textContent=ex.name;const meta=document.createElement('div');meta.className='catalog-detail-meta';meta.textContent=(ex.category||ex.muscles?.[0]||'RENFORCEMENT').toUpperCase()+' · '+ex.sets+' SÉRIES · '+ex.reps+' RÉPÉTITIONS';const desc=document.createElement('p');desc.className='catalog-detail-desc';desc.textContent=d.desc;body.append(title,meta,desc);const section=(heading,content)=>{const box=document.createElement('div');box.className='catalog-detail-section';const h=document.createElement('h4');h.textContent=heading;box.append(h);if(Array.isArray(content)){const ol=document.createElement('ol');content.forEach(t=>{const li=document.createElement('li');li.textContent=t;ol.append(li)});box.append(ol)}else{const p=document.createElement('p');p.textContent=content;box.append(p)}body.append(box)};section('MATÉRIEL',d.equipment);section('MUSCLES SOLLICITÉS',d.muscles);section('EXÉCUTION',d.steps);section('CONSEIL TECHNIQUE',d.tip);if(allowAdd){const footer=document.createElement('div');footer.className='catalog-modal-footer';const target=document.createElement('select');target.setAttribute('aria-label','Séance dans laquelle ajouter cet exercice');['A','B'].forEach(dayName=>{const o=document.createElement('option');o.value=dayName;o.textContent='Ajouter à la séance '+dayName;target.append(o)});target.value=day;const add=document.createElement('button');add.type='button';add.className='btn';add.textContent='＋ Ajouter au programme';add.addEventListener('click',()=>{addCatalogExercise(ex,target.value);$('catalogModal').classList.remove('open')});footer.append(target,add);body.append(footer)}$('catalogModal').classList.add('open')}
 function makePhotoFallback(){const f=document.createElement('div');f.className='catalog-photo-fallback';f.textContent='🏋️';return f}
 function addCatalogExercise(ex,targetDay=day){if(plans[targetDay].some(e=>e.name===ex.name)){toast('Cet exercice est déjà dans la séance '+targetDay);return}const copy={name:ex.name,sets:ex.sets,reps:ex.reps,weight:ex.weight,unit:ex.unit,muscles:[],category:ex.category};plans[targetDay].push(copy);state.customExercises[targetDay]=[...(state.customExercises[targetDay]||[]),copy];savePrograms();persist();renderWorkout();setupSelects();renderCatalog();toast(ex.name+' ajouté à la séance '+targetDay)}
 $('closeExerciseModal').addEventListener('click',()=>$('catalogModal').classList.remove('open'));$('catalogModal').addEventListener('click',e=>{if(e.target===$('catalogModal'))$('catalogModal').classList.remove('open')});
