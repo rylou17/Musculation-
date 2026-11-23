@@ -8,7 +8,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<title>Muscu Tracker V5.4</title>
+<title>Muscu Tracker V5.4.1</title>
 <style>
 :root{color-scheme:dark;--bg:#101113;--panel:#191b1f;--panel2:#202329;--line:#30343b;--ink:#f4f4f5;--muted:#9b9fa8;--orange:#ff791f;--orange2:#ff9a50;--soft:#392519;--green:#55c58a;--red:#ff6262;--radius:18px}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#302016 0%,var(--bg) 44%);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 calc(92px + env(safe-area-inset-bottom));min-height:100vh}
@@ -150,7 +150,7 @@ body.session-active{overflow:hidden}body.session-active .bottomnav{display:none}
 <body>
 <main>
 <header class="top">
- <div class="brand"><div class="logo">M</div><div><div class="eyebrow">TRAIN SMART · GET STRONGER</div><h1>Muscu Tracker <span style="color:var(--orange)">V5.4</span></h1><div class="sub">Ton entraînement. Tes données. Ta progression.</div></div></div>
+ <div class="brand"><div class="logo">M</div><div><div class="eyebrow">TRAIN SMART · GET STRONGER</div><h1>Muscu Tracker <span style="color:var(--orange)">V5.4.1</span></h1><div class="sub">Ton entraînement. Tes données. Ta progression.</div></div></div>
  <div class="top-actions"><button class="iconbtn" id="quickBackup" aria-label="Exporter la sauvegarde">⇧</button></div>
 </header>
 
@@ -213,7 +213,7 @@ body.session-active{overflow:hidden}body.session-active .bottomnav{display:none}
  <div class="panel"><div class="split"><h3>Coach de progression</h3><span class="pill">AUTO</span></div><p class="muted">Le coach analyse la dernière séance enregistrée pour chaque exercice. Il propose une hausse prudente lorsque toutes les séries et répétitions prévues sont réalisées. Applique uniquement si la technique est maîtrisée et qu'il reste 1 à 3 répétitions en réserve.</p><div id="coachContent"></div></div>
  <div class="panel"><h3>Sauvegarde & données</h3><p class="notice">Les données sont stockées localement dans Safari sur cet iPhone. Elles ne sont pas synchronisées automatiquement entre appareils. Exporte régulièrement une sauvegarde JSON dans Fichiers ou iCloud Drive. L'import remplace les données présentes sur cet appareil.</p><div class="tools" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" id="exportData">⇧ Exporter JSON</button><label class="btn secondary filelabel" for="importFile">⇩ Importer JSON</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice" id="backupMessage" aria-live="polite"></div></div>
  <div class="panel danger-zone"><h3>Réinitialisation</h3><p class="notice">Cette action efface les données locales de Muscu Tracker dans Safari. Fais une sauvegarde avant.</p><button class="btn danger" id="resetData">Réinitialiser les données</button></div>
- <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V5.4 · Conçu pour ton suivi personnel · <a href="https://gymvisual.com/" target="_blank" rel="noopener">GIF animés : © Gym visual</a></div>
+ <div class="notice" style="text-align:center;padding:10px 0">MUSCU TRACKER V5.4.1 · Conçu pour ton suivi personnel · <a href="https://gymvisual.com/" target="_blank" rel="noopener">GIF animés : © Gym visual</a></div>
 </section>
 </main>
 
@@ -397,7 +397,7 @@ function exerciseSearchTerms(ex){const d=detailFor(ex),base=[ex.name,ex.category
  const GYMVISUAL_DATA_URL='https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/data/exercises.json';
  const GYMVISUAL_ASSET_BASE='https://cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset@main/';
  const GYMVISUAL_ATTRIBUTION='© Gym visual — https://gymvisual.com/';
- let gymVisualIndex=null,gymVisualLoading=null,gymVisualError=false;
+ let gymVisualIndex=null,gymVisualLoading=false,gymVisualLoadPromise=null,gymVisualError=false;
  // Alias anglais correspondant précisément aux mouvements du catalogue Muscu Tracker.
  const GYMVISUAL_ALIASES={
   'Développé couché haltères':['dumbbell bench press','dumbbell chest press'],
@@ -444,13 +444,29 @@ function exerciseSearchTerms(ex){const d=detailFor(ex),base=[ex.name,ex.category
  function gymVisualNormalize(value){return normalizeMuscleText(value).replace(/\b(db)\b/g,'dumbbell').replace(/\b(pullups?)\b/g,'pull up').replace(/\b(pushups?)\b/g,'push up')}
  async function loadGymVisualIndex(){
   if(gymVisualIndex)return gymVisualIndex;
-  if(gymVisualLoading)return gymVisualLoading;
-  gymVisualLoading=fetch(GYMVISUAL_DATA_URL,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('dataset unavailable');return r.json()}).then(data=>{
+  if(gymVisualLoadPromise)return gymVisualLoadPromise;
+  gymVisualLoading=true;
+  gymVisualError=false;
+  gymVisualLoadPromise=fetch(GYMVISUAL_DATA_URL,{cache:'force-cache'}).then(r=>{
+   if(!r.ok)throw new Error('dataset unavailable ('+r.status+')');
+   return r.json();
+  }).then(data=>{
+   if(!Array.isArray(data))throw new Error('format de base inattendu');
    const index=new Map();
    data.forEach(item=>{if(item?.name&&item?.gif_url)index.set(gymVisualNormalize(item.name),item)});
-   gymVisualIndex=index;return index;
-  }).catch(err=>{gymVisualError=true;console.warn('Gym Visual indisponible',err);return null});
-  return gymVisualLoading;
+   gymVisualIndex=index;
+   return index;
+  }).catch(err=>{
+   gymVisualError=true;
+   console.warn('Gym Visual indisponible',err);
+   return null;
+  }).finally(()=>{
+   gymVisualLoading=false;
+   gymVisualLoadPromise=null;
+   refreshGymVisuals();
+   if(immersive?.active)renderStage();
+  });
+  return gymVisualLoadPromise;
  }
  function gymVisualRecord(ex){
   if(!gymVisualIndex)return null;
@@ -460,14 +476,14 @@ function exerciseSearchTerms(ex){const d=detailFor(ex),base=[ex.name,ex.category
  }
  function createRepdbVisual(ex,kind='catalog-thumb'){
   const record=gymVisualRecord(ex);
-  if(!record){const unavailable=document.createElement('div');unavailable.className='repdb-unavailable '+kind;unavailable.textContent=gymVisualLoading?'Chargement du GIF…':'GIF exact indisponible';unavailable.setAttribute('aria-label','Aucun GIF Gym Visual exact trouvé pour '+ex.name);return unavailable}
+  if(!record){const unavailable=document.createElement('div');unavailable.className='repdb-unavailable '+kind;unavailable.textContent=gymVisualLoading?'Chargement du GIF…':(gymVisualError?'Base Gym Visual inaccessible':'GIF exact indisponible');unavailable.setAttribute('aria-label',gymVisualLoading?'Chargement du GIF pour '+ex.name:(gymVisualError?'Base Gym Visual inaccessible':'Aucun GIF Gym Visual exact trouvé pour '+ex.name));return unavailable}
   const wrap=document.createElement('div');wrap.className='repdb-motion '+kind;wrap.setAttribute('role','img');wrap.setAttribute('aria-label','GIF Gym Visual de '+ex.name);
   const gif=document.createElement('img');gif.alt='Démonstration animée — '+ex.name;gif.loading='lazy';gif.decoding='async';gif.src=GYMVISUAL_ASSET_BASE+record.gif_url;gif.style.position='static';gif.style.width='100%';gif.style.height='100%';gif.style.objectFit='contain';
   gif.addEventListener('error',()=>{const fallback=document.createElement('div');fallback.className='repdb-unavailable '+kind;fallback.textContent='GIF indisponible';wrap.replaceWith(fallback)},{once:true});
   wrap.append(gif);return wrap;
  }
  function refreshGymVisuals(){if($('catalogPanel').classList.contains('open'))renderCatalog();if($('catalogModal').classList.contains('open')){const current=$('catalogModalBody').querySelector('.catalog-detail-title')?.textContent;const ex=exerciseCatalog.find(x=>x.name===current);if(ex)openExerciseDetail(ex,true)}}
- loadGymVisualIndex().then(index=>{if(index){refreshGymVisuals();if(immersive?.active)renderStage()}});
+ loadGymVisualIndex();
  function renderCatalog(){const list=$('catalogList'),query=normalizeMuscleText($('catalogSearch').value),category=$('catalogCategory').value,suitability=$('catalogSuitability').value;list.innerHTML='';const existing=new Set(plans[day].map(e=>e.name));const matches=exerciseCatalog.filter(ex=>(category==='Tous'||ex.category===category)&&(suitability==='Tous'||(suitability==='AB'?recommendedSession(ex)==='AB':recommendedSession(ex)===suitability))&&(!query||exerciseSearchTerms(ex).includes(query)));if(!matches.length){list.innerHTML='<div class="catalog-empty">Aucun exercice trouvé pour ce muscle. Essaie un autre terme (ex. dos, bras, cuisses).</div>';return}matches.forEach(ex=>{const row=document.createElement('div');row.className='catalog-item';const detail=detailFor(ex),thumb=createRepdbVisual(ex,'catalog-thumb');const info=document.createElement('div');info.className='catalog-item-info';const name=document.createElement('strong'),meta=document.createElement('small'),tag=document.createElement('span');name.textContent=ex.name;meta.textContent=ex.category+' · '+ex.sets+' × '+ex.reps+' · '+detail.muscles;tag.className='catalog-suitability '+(recommendedSession(ex)==='B'?'b':recommendedSession(ex)==='AB'?'both':'');tag.textContent=recommendedSession(ex)==='AB'?'A + B':('SÉANCE '+recommendedSession(ex));info.append(name,meta,tag);const actions=document.createElement('div');actions.className='catalog-item-actions';const detailBtn=document.createElement('button');detailBtn.type='button';detailBtn.className='detail-btn';detailBtn.textContent='Fiche';detailBtn.addEventListener('click',()=>openExerciseDetail(ex,true));const btn=document.createElement('button');btn.type='button';btn.className='add-btn';btn.textContent=existing.has(ex.name)?'Ajouté':'＋ Ajouter';btn.disabled=existing.has(ex.name);if(btn.disabled){btn.style.opacity='.45';btn.style.background='#555';btn.style.color='#ddd'}btn.addEventListener('click',()=>addCatalogExercise(ex,day));actions.append(detailBtn,btn);const visualWrap=document.createElement('div');visualWrap.className='catalog-visual-wrap';visualWrap.append(thumb);const credit=document.createElement('div');credit.className='catalog-gif-credit';credit.textContent='© Gym visual';visualWrap.append(credit);row.append(visualWrap,info,actions);list.append(row)})}
 function openExerciseDetail(ex,allowAdd=true){const d=detailFor(ex),body=$('catalogModalBody');body.innerHTML='';const photo=createRepdbVisual(ex,'catalog-photo');body.append(photo);const photoCredit=document.createElement('div');photoCredit.className='muted';photoCredit.style.marginTop='6px';photoCredit.textContent=(gymVisualRecord(ex)?GYMVISUAL_ATTRIBUTION+' · GIF animé 180 × 180.':(gymVisualLoading?'Chargement de la base Gym Visual…':'Aucun GIF exact trouvé : aucune animation d’un autre exercice n’est affichée.'));body.append(photoCredit);const title=document.createElement('div');title.className='catalog-detail-title';title.id='catalogDetailTitle';title.textContent=ex.name;const meta=document.createElement('div');meta.className='catalog-detail-meta';meta.textContent=(ex.category||ex.muscles?.[0]||'RENFORCEMENT').toUpperCase()+' · '+ex.sets+' SÉRIES · '+ex.reps+' RÉPÉTITIONS';const desc=document.createElement('p');desc.className='catalog-detail-desc';desc.textContent=d.desc;body.append(title,meta,desc);const section=(heading,content)=>{const box=document.createElement('div');box.className='catalog-detail-section';const h=document.createElement('h4');h.textContent=heading;box.append(h);if(Array.isArray(content)){const ol=document.createElement('ol');content.forEach(t=>{const li=document.createElement('li');li.textContent=t;ol.append(li)});box.append(ol)}else{const p=document.createElement('p');p.textContent=content;box.append(p)}body.append(box)};section('MATÉRIEL',d.equipment);section('MUSCLES SOLLICITÉS',d.muscles);section('EXÉCUTION',d.steps);section('CONSEIL TECHNIQUE',d.tip);if(allowAdd){const footer=document.createElement('div');footer.className='catalog-modal-footer';const target=document.createElement('select');target.setAttribute('aria-label','Séance dans laquelle ajouter cet exercice');['A','B'].forEach(dayName=>{const o=document.createElement('option');o.value=dayName;o.textContent='Ajouter à la séance '+dayName;target.append(o)});target.value=day;const add=document.createElement('button');add.type='button';add.className='btn';add.textContent='＋ Ajouter au programme';add.addEventListener('click',()=>{addCatalogExercise(ex,target.value);$('catalogModal').classList.remove('open')});footer.append(target,add);body.append(footer)}$('catalogModal').classList.add('open')}
 function makePhotoFallback(){const f=document.createElement('div');f.className='catalog-photo-fallback';f.textContent='🏋️';return f}
